@@ -2681,7 +2681,11 @@
   "login": {
     "forgotPassword": "שכחת סיסמה? - <0>איפוס</0>",
     "title": "ברוכים הבאים לבוקשוק",
-    "hint": "התחבר כדי לגשת לאזור החשבון"
+    "hint": "התחבר כדי לגשת לחשבון המוכר שלך",
+    "submit": "כניסה",
+    "notSellerYet": "עדיין לא מוכר? - <0>הרשמה</0>",
+    "storeCreated": "החנות נוצרה! נא להתחבר כדי להמשיך.",
+    "sessionExpired": "פג תוקף החיבור"
   },
   "invite": {
     "title": "ברוכים הבאים לבוקשוק",
@@ -3018,5 +3022,58 @@
     "minutes_other": "דקות",
     "seconds_one": "שנייה",
     "seconds_other": "שניות"
+  },
+  "register": {
+    "title": "יצירת חשבון מוכר",
+    "hint": "התחל למכור בבוקשוק.",
+    "companyName": "שם חברה",
+    "confirmPassword": "אימות סיסמה",
+    "signUp": "הרשמה",
+    "alreadySeller": "כבר יש לך חשבון? - <0>התחבר</0>",
+    "passwordMismatch": "הסיסמאות אינן תואמות",
+    "emailTaken": "כתובת האימייל כבר קיימת במערכת",
+    "error": "אירעה שגיאה, נסה שוב",
+    "validation": {
+      "nameRequired": "שם חייב להכיל לפחות 2 תווים",
+      "emailInvalid": "נא להזין כתובת אימייל תקינה",
+      "passwordMinLength": "הסיסמה חייבת להכיל לפחות 8 תווים",
+      "confirmPasswordRequired": "נא לאמת את הסיסמה"
+    },
+    "successTitle": "תודה על ההרשמה!",
+    "successHint": "ייתכן שתצטרך להמתין לאישור מנהל לפני הכניסה למערכת. אימייל אישור יישלח אליך בקרוב.",
+    "backToLogin": "חזרה להתחברות"
+  },
+  "onboarding": {
+    "wizard": {
+      "store": {
+        "title": "פרטי החנות שלך",
+        "name": "שם",
+        "email": "אימייל",
+        "handle": "מזהה URL",
+        "handleTooltip": "המזהה ישמש כ-URL של החנות שלך. השאר ריק כדי ליצור אוטומטית מהשם.",
+        "handlePlaceholder": "my-store",
+        "currency": "מטבע",
+        "selectCurrency": "בחר",
+        "currencyHint": "לא ניתן לשנות לאחר יצירת החנות"
+      },
+      "address": {
+        "title": "כתובת החנות",
+        "name": "שם",
+        "namePlaceholder": "משרד ראשי",
+        "address": "כתובת",
+        "address2": "דירה, קומה וכו'",
+        "postalCode": "מיקוד",
+        "city": "עיר",
+        "country": "מדינה",
+        "state": "מחוז/אזור"
+      },
+      "validation": {
+        "nameRequired": "נא להזין שם",
+        "emailInvalid": "נא להזין כתובת אימייל תקינה",
+        "currencyRequired": "נא לבחור מטבע",
+        "countryRequired": "נא לבחור מדינה"
+      },
+      "skip": "דלג"
+    }
   }
 }

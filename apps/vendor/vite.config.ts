@@ -8,6 +8,8 @@ export default defineConfig({
     react(),
     mercurDashboardPlugin({
       medusaConfigPath: '../../apps/api/medusa-config.ts',
+      name: 'בוקשוק',
+      logo: '/bookshook-logo.png',
       components: {
         StoreSetup: 'components/store-setup/store-setup',
       },

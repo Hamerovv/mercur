@@ -4,8 +4,11 @@ import { CartProvider } from "@/context/cart"
 import Nav from "@/components/nav"
 
 export const metadata: Metadata = {
-  title: "Bookshook",
+  title: "בוקשוק",
   description: "חנות הספרים שלך",
+  icons: {
+    icon: "/cart.png",
+  },
 }
 
 export default function RootLayout({

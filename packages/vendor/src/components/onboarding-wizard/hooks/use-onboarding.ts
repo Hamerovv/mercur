@@ -133,9 +133,15 @@ export const useOnboarding = (memberEmail: string) => {
       try {
         setIsSubmitting(true);
 
+        const generatedHandle = storeData.name
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^\w֐-׿-]/g, "")
+          .replace(/^-+|-+$/g, "") || undefined
+
         const result = await createSeller({
           name: storeData.name,
-          handle: storeData.handle || undefined,
+          handle: storeData.handle || generatedHandle,
           email: storeData.email,
           phone: storeData.phone || undefined,
           member_email: memberEmail,

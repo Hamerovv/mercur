@@ -3071,9 +3071,38 @@
         "nameRequired": "נא להזין שם",
         "emailInvalid": "נא להזין כתובת אימייל תקינה",
         "currencyRequired": "נא לבחור מטבע",
-        "countryRequired": "נא לבחור מדינה"
+        "countryRequired": "נא לבחור מדינה",
+        "accountNameRequired": "נא להזין שם בעל החשבון"
       },
-      "skip": "דלג"
+      "skip": "דלג",
+      "stepOf": "שלב {{current}} מתוך {{total}}",
+      "steps": {
+        "store": "פרטי החנות",
+        "address": "כתובת",
+        "company": "פרטי חברה",
+        "payment": "פרטי תשלום"
+      },
+      "company": {
+        "title": "פרטי החברה",
+        "subtitle": "מידע על המוכר המקצועי",
+        "corporateName": "שם חברה",
+        "registrationNumber": "מספר רישום",
+        "taxId": "מספר עוסק / ח.פ."
+      },
+      "payment": {
+        "title": "פרטי תשלום",
+        "subtitle": "כיצד תרצה לקבל תשלומים",
+        "accountName": "שם בעל החשבון",
+        "accountNumber": "מספר חשבון",
+        "achRoutingNumber": "מספר ניתוב ACH",
+        "iban": "IBAN",
+        "swiftBic": "SWIFT / BIC"
+      },
+      "preview": {
+        "title": "ברוכים הבאים לבוקשוק",
+        "description": "פורטל המוכרים שלך לניהול החנות, הספרים, ההזמנות והתשלומים.",
+        "placeholder": "תצוגה מקדימה"
+      }
     }
   }
 }

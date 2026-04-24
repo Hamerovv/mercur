@@ -19,7 +19,9 @@ export function TaxRegionProviderSection({
       <div className="px-6 py-4">
         {taxRegion.provider_id && (
           <span className="text-ui-fg-subtle">
-            {formatProvider(taxRegion.provider_id!)}
+            {taxRegion.provider_id === "tp_system"
+              ? t("taxRegions.settings.systemTaxProviderLabel")
+              : formatProvider(taxRegion.provider_id!)}
           </span>
         )}
       </div>

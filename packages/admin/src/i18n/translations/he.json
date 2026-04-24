@@ -3030,5 +3030,125 @@
     "minutes_other": "דקות",
     "seconds_one": "שנייה",
     "seconds_other": "שניות"
+  },
+  "stores": {
+    "domain": "חנויות",
+    "handleTooltip": "המזהה משמש כ-URL של החנות. השאר ריק כדי ליצור אוטומטית מהשם.",
+    "fields": {
+      "name": "שם",
+      "handle": "מזהה",
+      "email": "אימייל",
+      "phone": "טלפון",
+      "logo": "לוגו",
+      "cover_image": "תמונת כריכה",
+      "address": "כתובת",
+      "address_1": "כתובת שורה 1",
+      "address_2": "כתובת שורה 2",
+      "postal_code": "מיקוד",
+      "city": "עיר",
+      "province": "מחוז",
+      "country_code": "קוד מדינה",
+      "premium": "מומלץ"
+    },
+    "status": {
+      "open": "פעיל",
+      "pending_approval": "ממתין לאישור",
+      "pendingApproval": "ממתין לאישור",
+      "suspended": "מושהה",
+      "terminated": "סגור"
+    },
+    "premium": {
+      "yes": "כן",
+      "no": "לא",
+      "description": "אם מסומן, החנות תודגש עם תג מיוחד."
+    },
+    "invite": {
+      "button": "הזמן",
+      "header": "הזמן חנות",
+      "hint": "הזמן חנות חדשה לשוק שלך",
+      "successToast": "הזמנה נשלחה ל-{{email}}",
+      "errorToast": "שליחת ההזמנה נכשלה"
+    },
+    "members": {
+      "addUser": {
+        "header": "הוסף משתמש",
+        "hint": "הוסף משתמש חדש לניהול חנות זו.",
+        "assignSuccess": "המשתמש {{email}} שויך לחנות"
+      },
+      "invite": {
+        "resendSuccess": "הזמנה נשלחה מחדש ל-{{email}}",
+        "deleteSuccess": "ההזמנה ל-{{email}} נמחקה",
+        "linkCopied": "קישור ההזמנה הועתק",
+        "copyFailed": "העתקת הקישור נכשלה",
+        "noVendorUrl": "כתובת URL של הספק לא מוגדרת בשרת"
+      }
+    },
+    "edit": {
+      "header": "עריכת חנות",
+      "mediaHeading": "מדיה",
+      "mediaTipLabel": "טיפ:",
+      "mediaTipBody": "מדיה זו תוצג בחנות.",
+      "successToast": "החנות {{name}} עודכנה בהצלחה."
+    },
+    "create": {
+      "tabs": {
+        "details": "פרטים",
+        "users": "מנהל"
+      },
+      "header": "פרטים",
+      "usersHeader": "מנהל",
+      "usersHint": "הקצה מנהל לחנות זו.",
+      "usersHintSecondary": "לאחר יצירת החנות, המשתמש שנבחר יקבל הזמנה.",
+      "ownerEmail": "אימייל בעלים",
+      "ownerEmailHint": "לבעלים תוקצה תפקיד מנהל חנות.",
+      "successToast": "החנות נוצרה בהצלחה",
+      "validation": {
+        "nameRequired": "נא להזין שם",
+        "emailRequired": "נא להזין אימייל",
+        "emailInvalid": "נא להזין אימייל תקין",
+        "currencyRequired": "נא לבחור מטבע"
+      }
+    },
+    "request": {
+      "title": "בקשת חנות",
+      "description": "{{requester}} הגיש בקשה לפתיחת חנות. בדוק את הפרטים ובחר אם לאשר או לדחות.",
+      "confirm": "אשר",
+      "reject": "דחה",
+      "confirmNoteLabel": "הערת אישור",
+      "rejectNoteLabel": "סיבת דחייה",
+      "notePlaceholder": "הערה אופציונלית למוכר...",
+      "confirmSuccess": "החנות אושרה",
+      "rejectSuccess": "החנות נדחתה"
+    },
+    "actions": {
+      "approve": {
+        "label": "אשר",
+        "title": "אישור חנות",
+        "description": "האם אתה בטוח שברצונך לאשר את החנות?",
+        "success": "החנות אושרה"
+      },
+      "reject": {
+        "label": "דחה",
+        "title": "דחיית חנות",
+        "description": "האם אתה בטוח שברצונך לדחות את החנות?",
+        "success": "החנות נדחתה"
+      },
+      "edit": {
+        "label": "עריכה"
+      },
+      "delete": {
+        "label": "מחק",
+        "title": "מחיקת חנות",
+        "description": "האם אתה בטוח שברצונך למחוק חנות זו? פעולה זו אינה הפיכה.",
+        "success": "החנות נמחקה",
+        "successToast": "{{count}} חנות/ות נמחקו",
+        "errorToast": "מחיקת החנות נכשלה"
+      }
+    },
+    "bulkEdit": {
+      "successToast": "{{count}} חנות/ות עודכנו",
+      "emptyHeading": "לא נבחרו חנויות",
+      "emptyDescription": "בחר חנויות מהרשימה לעריכה."
+    }
   }
 }

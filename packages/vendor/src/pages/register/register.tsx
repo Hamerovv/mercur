@@ -68,7 +68,12 @@ const RegisterForm = () => {
       )
       navigate("/onboarding", { state: { email, first_name, last_name } })
     } catch (error: any) {
-      setServerError(error?.message || t("register.error"))
+      const msg: string = error?.message || ""
+      if (msg.toLowerCase().includes("already exists") || msg.toLowerCase().includes("email already")) {
+        setServerError(t("register.emailTaken"))
+      } else {
+        setServerError(msg || t("register.error"))
+      }
     }
   })
 

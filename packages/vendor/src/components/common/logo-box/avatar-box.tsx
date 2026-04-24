@@ -9,7 +9,7 @@ export default function AvatarBox({ checked }: { checked?: boolean }) {
   return (
     <IconAvatar
       size="xlarge"
-      className="bg-ui-button-neutral shadow-buttons-neutral after:button-neutral-gradient relative mb-4 flex h-[50px] w-[50px] items-center justify-center rounded-xl after:inset-0 after:content-['']"
+      className="bg-ui-button-neutral shadow-buttons-neutral after:button-neutral-gradient relative mb-4 flex h-[90px] w-[90px] items-center justify-center rounded-xl after:inset-0 after:content-['']"
     >
       {checked && (
         <motion.div

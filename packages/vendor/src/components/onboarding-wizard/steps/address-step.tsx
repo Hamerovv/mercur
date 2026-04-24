@@ -6,15 +6,13 @@ import { useTranslation } from "react-i18next";
 import * as z from "zod";
 
 import { Form } from "@components/common/form";
-import { CountrySelect } from "@components/inputs/country-select/country-select";
-
 const AddressStepSchema = z.object({
   name: z.string().min(1, i18n.t("onboarding.wizard.validation.nameRequired")),
   address_1: z.string().optional(),
   address_2: z.string().optional(),
   postal_code: z.string().optional(),
   city: z.string().optional(),
-  country_code: z.string().min(1, i18n.t("onboarding.wizard.validation.countryRequired")),
+  country_code: z.string().min(1),
   province: z.string().optional(),
 });
 
@@ -37,7 +35,7 @@ export const AddressStep = ({ onSubmit, onSkip, isPending }: AddressStepProps) =
       address_2: "",
       postal_code: "",
       city: "",
-      country_code: "",
+      country_code: "il",
       province: "",
     },
   });
@@ -124,19 +122,13 @@ export const AddressStep = ({ onSubmit, onSkip, isPending }: AddressStepProps) =
                 </Form.Item>
               )}
             />
-            <Form.Field
-              control={form.control}
-              name="country_code"
-              render={({ field: { onChange, ref: _ref, ...field } }) => (
-                <Form.Item>
-                  <Form.Label>{t("onboarding.wizard.address.country")}</Form.Label>
-                  <Form.Control>
-                    <CountrySelect {...field} onChange={onChange} />
-                  </Form.Control>
-                  <Form.ErrorMessage />
-                </Form.Item>
-              )}
-            />
+            <Form.Item>
+              <Form.Label>{t("onboarding.wizard.address.country")}</Form.Label>
+              <div className="bg-ui-bg-field border-ui-border-base flex h-8 items-center rounded-md border px-3 text-sm text-ui-fg-base">
+                ישראל 🇮🇱
+              </div>
+              <input type="hidden" {...form.register("country_code")} />
+            </Form.Item>
             <Form.Field
               control={form.control}
               name="province"

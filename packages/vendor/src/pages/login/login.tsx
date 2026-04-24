@@ -25,7 +25,12 @@ const LoginSchema = z.object({
 });
 
 const LoginLogo = () => {
-  return <AvatarBox />;
+  return (
+    <div className="flex flex-col items-center">
+      <AvatarBox />
+      <p className="text-ui-fg-subtle text-sm mt-1">הופכים את ספרים לזהב</p>
+    </div>
+  );
 };
 
 const LoginHeader = () => {
@@ -49,9 +54,9 @@ const LoginForm = () => {
   const reason = searchParams.get("reason") || "";
   const reasonMessage =
     reason === "seller-created"
-      ? "Store created! Please log in to continue."
+      ? t("login.storeCreated")
       : reason && reason.toLowerCase() === "unauthorized"
-        ? "Session expired"
+        ? t("login.sessionExpired")
         : reason;
 
   const form = useForm<z.infer<typeof LoginSchema>>({

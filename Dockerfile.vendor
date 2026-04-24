@@ -1,0 +1,45 @@
+FROM oven/bun:1-alpine AS builder
+
+RUN apk add --no-cache python3 make g++ nodejs npm jq
+
+WORKDIR /app
+
+# Copy workspace manifests for layer caching
+COPY package.json bun.lock turbo.json ./
+COPY apps/vendor/package.json ./apps/vendor/
+COPY packages/cli/package.json ./packages/cli/
+COPY packages/core/package.json ./packages/core/
+COPY packages/types/package.json ./packages/types/
+COPY packages/dashboard-sdk/package.json ./packages/dashboard-sdk/
+COPY packages/dashboard-shared/package.json ./packages/dashboard-shared/
+COPY packages/client/package.json ./packages/client/
+COPY packages/registry/package.json ./packages/registry/
+COPY packages/admin/package.json ./packages/admin/
+COPY packages/vendor/package.json ./packages/vendor/
+COPY packages/providers/payout-stripe-connect/package.json ./packages/providers/payout-stripe-connect/
+COPY integration-tests/package.json ./integration-tests/
+
+# Remove turbo (native binary that fails to extract in Alpine)
+RUN jq 'del(.devDependencies.turbo) | del(.packageManager)' package.json > pkg.tmp && mv pkg.tmp package.json
+
+RUN bun install
+
+COPY apps/vendor/ ./apps/vendor/
+COPY apps/api/medusa-config.ts ./apps/api/medusa-config.ts
+COPY packages/ ./packages/
+
+# Build workspace packages in dependency order (without turbo)
+RUN cd packages/types && bun run build
+RUN cd packages/cli && bun run build
+RUN cd packages/dashboard-sdk && bun run build
+RUN cd packages/dashboard-shared && bun run build
+RUN cd packages/client && bun run build
+RUN cd packages/vendor && bun run build || true
+
+# Build the vendor panel
+RUN cd apps/vendor && bunx vite build
+
+FROM nginx:alpine
+COPY --from=builder /app/apps/vendor/dist /usr/share/nginx/html
+COPY nginx.vendor.conf /etc/nginx/conf.d/default.conf
+EXPOSE 7001

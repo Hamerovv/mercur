@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
+import i18n from "i18next"
 import { Button, Input, Select, toast } from "@medusajs/ui"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
@@ -18,7 +19,7 @@ const EditProfileSchema = zod.object({
 })
 
 export const EditProfileForm = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
   const direction = useDocumentDirection()
 

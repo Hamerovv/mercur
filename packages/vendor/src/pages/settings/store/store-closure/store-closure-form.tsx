@@ -42,7 +42,7 @@ export const StoreClosureForm = ({ seller }: StoreClosureFormProps) => {
     resolver: zodResolver(StoreClosureSchema),
   });
 
-  const { mutateAsync, isPending } = useUpdateSeller(seller.id);
+  const { mutateAsync, isPending } = useUpdateSeller();
 
   const handleSubmit = form.handleSubmit(async (data) => {
     await mutateAsync(

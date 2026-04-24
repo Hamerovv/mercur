@@ -33,7 +33,7 @@ export const StoreTimeOffSection = ({ seller }: StoreTimeOffSectionProps) => {
   const { t } = useTranslation();
   const { getFullDate } = useDate();
   const prompt = usePrompt();
-  const { mutateAsync: updateSeller } = useUpdateSeller(seller.id);
+  const { mutateAsync: updateSeller } = useUpdateSeller();
 
   const data: TimeOffEntry[] = useMemo(() => {
     if (!seller.closed_from) return [];

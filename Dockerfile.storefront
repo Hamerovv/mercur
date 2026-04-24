@@ -1,0 +1,36 @@
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+COPY apps/storefront/package.json ./
+RUN npm install
+
+COPY apps/storefront/ .
+
+# NEXT_PUBLIC_* vars must be baked at build time (browser reads them)
+ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL=http://localhost:9000
+ARG NEXT_PUBLIC_PUBLISHABLE_KEY=
+ENV NEXT_PUBLIC_MEDUSA_BACKEND_URL=$NEXT_PUBLIC_MEDUSA_BACKEND_URL
+ENV NEXT_PUBLIC_PUBLISHABLE_KEY=$NEXT_PUBLIC_PUBLISHABLE_KEY
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN npm run build
+
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+EXPOSE 8000
+ENV PORT=8000
+ENV HOSTNAME="0.0.0.0"
+
+# Server-side URL: storefront container → medusa container (Docker internal network)
+ENV MEDUSA_BACKEND_URL=http://medusa:9000
+
+CMD ["node", "server.js"]

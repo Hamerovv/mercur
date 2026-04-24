@@ -1,15 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Heading, Input, Select, Textarea } from "@medusajs/ui";
+import { Button, Heading, Input, Textarea } from "@medusajs/ui";
 import i18n from "i18next";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useLoaderData } from "react-router-dom";
 import * as z from "zod";
 
 import { Form } from "@components/common/form";
 import { HandleInput } from "@components/inputs/handle-input";
-import { useStore } from "@hooks/api";
-import { onboardingLoader } from "../../../pages/onboarding/loader";
 
 const StoreStepSchema = z.object({
   name: z.string().min(1, i18n.t("onboarding.wizard.validation.nameRequired")),
@@ -29,10 +26,6 @@ type StoreStepProps = {
 
 export const StoreStep = ({ onSubmit, isPending }: StoreStepProps) => {
   const { t } = useTranslation();
-  const initialData = useLoaderData() as Awaited<
-    ReturnType<typeof onboardingLoader>
-  >;
-  const { store } = useStore(undefined, { initialData });
 
   const form = useForm<StoreStepValues>({
     resolver: zodResolver(StoreStepSchema),
@@ -40,7 +33,7 @@ export const StoreStep = ({ onSubmit, isPending }: StoreStepProps) => {
       name: "",
       email: "",
       phone: "",
-      currency_code: "",
+      currency_code: "ils",
       description: "",
       handle: "",
     },
@@ -131,37 +124,7 @@ export const StoreStep = ({ onSubmit, isPending }: StoreStepProps) => {
                 </Form.Item>
               )}
             />
-            <Form.Field
-              control={form.control}
-              name="currency_code"
-              render={({ field: { onChange, ref, ...field } }) => (
-                <Form.Item>
-                  <Form.Label>
-                    {t("onboarding.wizard.store.currency")}
-                  </Form.Label>
-                  <Form.Control>
-                    <Select {...field} onValueChange={onChange}>
-                      <Select.Trigger ref={ref}>
-                        <Select.Value
-                          placeholder={t("onboarding.wizard.store.selectCurrency")}
-                        />
-                      </Select.Trigger>
-                      <Select.Content>
-                        {store?.supported_currencies?.map((sc) => (
-                          <Select.Item
-                            key={sc.currency_code}
-                            value={sc.currency_code}
-                          >
-                            {sc.currency_code.toUpperCase()}
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select>
-                  </Form.Control>
-                  <Form.ErrorMessage />
-                </Form.Item>
-              )}
-            />
+            <input type="hidden" {...form.register("currency_code")} />
           </div>
           <Button type="submit" className="w-full" isLoading={isPending}>
             {t("actions.continue")}

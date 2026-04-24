@@ -9,7 +9,7 @@ import {
   useMutation,
   useQuery,
 } from "@tanstack/react-query";
-import { sdk } from "../../lib/client";
+import { fetchQuery, sdk } from "../../lib/client";
 import { queryClient } from "../../lib/query-client";
 import { queryKeysFactory } from "../../lib/query-key-factory";
 import { membersQueryKeys } from "./members";
@@ -56,16 +56,40 @@ export const useSelectSeller = (
 };
 
 export const useUpdateSeller = (
-  id: string,
   options?: UseMutationOptions<
-    InferClientOutput<typeof sdk.vendor.sellers.$id.mutate>,
+    InferClientOutput<typeof sdk.vendor.sellers.me.mutate>,
     ClientError,
-    Omit<InferClientInput<typeof sdk.vendor.sellers.$id.mutate>, "$id">
+    InferClientInput<typeof sdk.vendor.sellers.me.mutate>
+  >,
+) => {
+  return useMutation({
+    mutationFn: (payload) => sdk.vendor.sellers.me.mutate(payload),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: sellersQueryKeys.all,
+      });
+      queryClient.invalidateQueries({
+        queryKey: membersQueryKeys.me(),
+      });
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};
+
+export const useUpdateSellerAddressMe = (
+  options?: UseMutationOptions<
+    { seller: unknown },
+    Error,
+    Omit<InferClientInput<typeof sdk.vendor.sellers.$id.address.mutate>, "$id">
   >,
 ) => {
   return useMutation({
     mutationFn: (payload) =>
-      sdk.vendor.sellers.$id.mutate({ $id: id, ...payload }),
+      fetchQuery("/vendor/sellers/me/address", {
+        method: "POST",
+        body: payload as object,
+      }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: sellersQueryKeys.all,

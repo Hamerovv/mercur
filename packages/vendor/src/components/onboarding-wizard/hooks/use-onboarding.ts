@@ -180,16 +180,21 @@ export const useOnboarding = (memberEmail: string) => {
         setSellerId(newSellerId);
 
         // Force a fresh login so the new member_id lands in the JWT.
+        // logout() can return 401 for unregistered sessions — that's expected.
+        // The navigate to /login + re-auth creates a new session regardless.
         try {
           await logout();
         } catch {
-          // If logout fails we still redirect to /login — user will re-auth there.
+          // Ignore — the stale session will be overwritten by the next login.
         }
         queryClient.clear();
         sessionStorage.removeItem("mercur_onboarding_email");
         sessionStorage.removeItem("mercur_register_draft");
+        // Store a flag so the login page knows to prompt for credentials even if
+        // a stale cookie is present.
+        sessionStorage.setItem("mercur_force_reauth", "1");
 
-        navigate("/login", { replace: true });
+        navigate("/login?reason=seller-created", { replace: true });
       } catch (error: any) {
         toast.error(error.message);
       } finally {

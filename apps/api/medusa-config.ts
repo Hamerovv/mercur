@@ -4,8 +4,17 @@ import { withMercur } from '@mercurjs/core'
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
 module.exports = withMercur({
+  admin: {
+    disable: false,
+    backendUrl: process.env.MEDUSA_BACKEND_URL || "http://localhost:9000",
+  },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    redisUrl: process.env.REDIS_URL,
+    cookieOptions: {
+      secure: false,
+      sameSite: "lax" as const,
+    },
     http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,

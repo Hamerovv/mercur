@@ -48,9 +48,11 @@ const LoginForm = () => {
 
   const reason = searchParams.get("reason") || "";
   const reasonMessage =
-    reason && reason.toLowerCase() === "unauthorized"
-      ? "Session expired"
-      : reason;
+    reason === "seller-created"
+      ? "Store created! Please log in to continue."
+      : reason && reason.toLowerCase() === "unauthorized"
+        ? "Session expired"
+        : reason;
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -89,6 +91,7 @@ const LoginForm = () => {
           });
         },
         onSuccess: () => {
+          sessionStorage.removeItem("mercur_force_reauth");
           const email = form.getValues("email");
           setTimeout(() => {
             navigate("/store-select", {

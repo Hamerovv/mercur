@@ -98,7 +98,7 @@ export const EditStoreForm = ({ seller }: EditStoreFormProps) => {
     keyName: "field_id",
   });
 
-  const { mutateAsync, isPending } = useUpdateSeller(seller.id);
+  const { mutateAsync, isPending } = useUpdateSeller();
 
   const handleSubmit = form.handleSubmit(async (values) => {
     let logoUrl: string | null = null;

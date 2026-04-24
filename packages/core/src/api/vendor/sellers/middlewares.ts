@@ -52,6 +52,18 @@ export const vendorSellersMiddlewares: MiddlewareRoute[] = [
       ),
     ],
   },
+  // POST /vendor/sellers/me/address — upsert current seller's address (no RBAC policy)
+  {
+    method: ["POST"],
+    matcher: "/vendor/sellers/me/address",
+    middlewares: [
+      validateAndTransformBody(VendorUpsertSellerAddress),
+      validateAndTransformQuery(
+        VendorGetSellerParams,
+        QueryConfig.retrieveVendorSellerQueryConfig
+      ),
+    ],
+  },
   // POST /vendor/sellers — create seller
   {
     method: ["POST"],

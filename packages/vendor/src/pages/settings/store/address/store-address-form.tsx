@@ -10,7 +10,7 @@ import { CountrySelect } from "@components/inputs/country-select";
 import { RouteDrawer, useRouteModal } from "@components/modals";
 import { KeyboundForm } from "@components/utilities/keybound-form";
 import { HttpTypes } from "@mercurjs/types";
-import { useUpdateSellerAddress } from "@hooks/api";
+import { useUpdateSellerAddressMe } from "@hooks/api";
 
 type StoreAddressFormProps = {
   seller: HttpTypes.StoreSellerResponse["seller"];
@@ -44,12 +44,12 @@ export const StoreAddressForm = ({ seller }: StoreAddressFormProps) => {
       city: address?.city ?? "",
       province: address?.province ?? "",
       postal_code: address?.postal_code ?? "",
-      country_code: address?.country_code ?? "",
+      country_code: address?.country_code ?? "il",
     },
     resolver: zodResolver(StoreAddressSchema),
   });
 
-  const { mutateAsync, isPending } = useUpdateSellerAddress(seller.id);
+  const { mutateAsync, isPending } = useUpdateSellerAddressMe();
 
   const handleSubmit = form.handleSubmit(async (values) => {
     await mutateAsync(
@@ -90,7 +90,11 @@ export const StoreAddressForm = ({ seller }: StoreAddressFormProps) => {
               <Form.Item>
                 <Form.Label>{t("store.address.nameLabel")}</Form.Label>
                 <Form.Control>
-                  <Input size="small" {...field} />
+                  <Input
+                    size="small"
+                    placeholder={t("store.address.namePlaceholder")}
+                    {...field}
+                  />
                 </Form.Control>
                 <Form.ErrorMessage />
               </Form.Item>

@@ -1,11 +1,9 @@
 import i18n from "i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 
 import { defaultI18nOptions } from "../../../i18n/config";
 import translations from "../../../i18n/translations";
 import customI18nResources from "virtual:mercur/i18n";
-import config from "virtual:mercur/config";
 
 function deepMerge(
   target: Record<string, any>,
@@ -39,20 +37,17 @@ export const I18n = () => {
   }
 
   i18n
-    .use(
-      new LanguageDetector(null, {
-        lookupCookie: "lng",
-        lookupLocalStorage: "lng",
-      }),
-    )
     .use(initReactI18next)
     .init({
       ...defaultI18nOptions,
-      ...(config.i18n?.defaultLanguage && {
-        lng: config.i18n.defaultLanguage,
-      }),
+      lng: "he",
       resources: mergedTranslations,
     });
+
+  if (typeof document !== "undefined") {
+    document.documentElement.dir = "rtl";
+    document.documentElement.lang = "he";
+  }
 
   return null;
 };

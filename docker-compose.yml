@@ -1,0 +1,76 @@
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: hadas
+      POSTGRES_PASSWORD: Sifrut10
+      POSTGRES_DB: bookshook_mercur
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hadas -d bookshook_mercur"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:alpine
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  medusa:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    environment:
+      DATABASE_URL: postgres://hadas:Sifrut10@db:5432/bookshook_mercur?sslmode=disable
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:-JWT-Hadas-Secret}
+      COOKIE_SECRET: ${COOKIE_SECRET:-COOKIE-LOCAL-SECRET}
+      STORE_CORS: ${STORE_CORS:-http://localhost:8000}
+      ADMIN_CORS: ${ADMIN_CORS:-http://localhost:9000}
+      VENDOR_CORS: ${VENDOR_CORS:-http://localhost:7001}
+      AUTH_CORS: ${AUTH_CORS:-http://localhost:9000,http://localhost:7001,http://localhost:8000}
+      NODE_ENV: staging
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: sh -c "cd /app/apps/api/.medusa/server && npx medusa db:migrate && npx medusa start"
+
+  vendor:
+    build:
+      context: .
+      dockerfile: Dockerfile.vendor
+    ports:
+      - "7001:7001"
+    depends_on:
+      - medusa
+
+  storefront:
+    build:
+      context: .
+      dockerfile: Dockerfile.storefront
+      args:
+        NEXT_PUBLIC_MEDUSA_BACKEND_URL: http://localhost:9000
+        NEXT_PUBLIC_PUBLISHABLE_KEY: ${NEXT_PUBLIC_PUBLISHABLE_KEY:-pk_823e1c8c34a62d70030c326c79abbafdd80f117cacc3be366f89e1397c772caa}
+    ports:
+      - "8000:8000"
+    environment:
+      MEDUSA_BACKEND_URL: http://medusa:9000
+      PUBLISHABLE_KEY: ${NEXT_PUBLIC_PUBLISHABLE_KEY:-pk_823e1c8c34a62d70030c326c79abbafdd80f117cacc3be366f89e1397c772caa}
+    depends_on:
+      - medusa
+
+volumes:
+  postgres_data:

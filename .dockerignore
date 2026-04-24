@@ -1,0 +1,12 @@
+node_modules
+**/node_modules
+**/.medusa/server/node_modules
+dist
+.cache
+build
+coverage
+*.log
+.DS_Store
+.idea
+apps/vendor/dist
+apps/api/.medusa

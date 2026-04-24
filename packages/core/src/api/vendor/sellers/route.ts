@@ -17,10 +17,7 @@ export const GET = async (
   const memberId = req.auth_context?.actor_id
 
   if (!memberId) {
-    throw new MedusaError(
-      MedusaError.Types.UNAUTHORIZED,
-      "You must be authenticated to access seller information."
-    )
+    return res.json({ seller_members: [], count: 0, offset: 0, limit: 0 })
   }
 
   const { data: sellerMembers, metadata } = await query.graph({

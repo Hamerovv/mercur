@@ -1,4 +1,4 @@
-import { Alert, Button, Heading, Hint, Input, Text } from "@medusajs/ui";
+import { Alert, Button, Hint, Input, Text } from "@medusajs/ui";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -95,15 +95,18 @@ export const Login = () => {
           className="mb-4 flex flex-col items-center"
           data-testid="login-header"
         >
-          <Heading data-testid="login-title">
-            {t("login.title", { name: config.name ?? "Mercur" })}
-          </Heading>
+          <img
+            src={config.logo}
+            alt="בוקשוק"
+            className="mb-1 h-12 w-auto object-contain"
+            data-testid="login-title"
+          />
           <Text
             size="small"
             className="text-center text-ui-fg-subtle"
             data-testid="login-hint"
           >
-            {t("login.hint")}
+            הופכים את הספרים לזהב
           </Text>
         </div>
         <div className="flex w-full flex-col gap-y-3">

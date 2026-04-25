@@ -34,6 +34,7 @@ import { ThemeToggle } from "../user-menu";
 import { useDocumentDirection } from "../../../hooks/use-document-direction";
 import components from "virtual:mercur/components";
 import menuItemsModule from "virtual:mercur/menu-items";
+import config from "virtual:mercur/config";
 import { getMenuItemsByType, getNestedMenuItems } from "../../../utils/routes";
 
 export const MainLayout = () => {
@@ -244,31 +245,41 @@ export const Header = () => {
             "focus-visible:shadow-borders-focus",
           )}
         >
-          {fallback ? (
+          {config.logo ? (
+            <img
+              src={config.logo}
+              alt={config.name ?? ""}
+              className="h-6 w-6 rounded-md object-cover"
+            />
+          ) : fallback ? (
             <Avatar variant="squared" size="xsmall" fallback={fallback} />
           ) : (
             <Skeleton className="h-6 w-6 rounded-md" />
           )}
           <div className="block overflow-hidden text-start">
-            {name ? (
-              <Text
-                size="small"
-                weight="plus"
-                leading="compact"
-                className="truncate"
-              >
-                {seller_member.seller.name}
-              </Text>
-            ) : (
-              <Skeleton className="h-[9px] w-[120px]" />
-            )}
+            <Text
+              size="small"
+              weight="plus"
+              leading="compact"
+              className="truncate"
+            >
+              {seller_member?.seller.name ?? config.name}
+            </Text>
           </div>
           <EllipsisHorizontal className="text-ui-fg-muted" />
         </DropdownMenu.Trigger>
         {isLoaded && (
           <DropdownMenu.Content className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-0">
             <div className="flex items-center gap-x-3 px-2 py-1">
-              <Avatar variant="squared" size="small" fallback={fallback} />
+              {config.logo ? (
+                <img
+                  src={config.logo}
+                  alt={config.name ?? ""}
+                  className="h-8 w-8 rounded-md object-cover"
+                />
+              ) : (
+                <Avatar variant="squared" size="small" fallback={fallback} />
+              )}
               <div className="flex flex-col overflow-hidden">
                 <Text
                   size="small"
@@ -276,7 +287,7 @@ export const Header = () => {
                   leading="compact"
                   className="truncate"
                 >
-                  {name}
+                  {name ?? config.name}
                 </Text>
                 <Text
                   size="xsmall"

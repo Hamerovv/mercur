@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "בוקשוק",
   description: "חנות הספרים שלך",
   icons: {
-    icon: "/cart.png",
+    icon: "/bookshook-logo.png",
   },
 }
 

@@ -28,6 +28,7 @@ import { Shell } from "../../layout/shell";
 import { UserMenu } from "../user-menu";
 import components from "virtual:mercur/components";
 import menuItemsModule from "virtual:mercur/menu-items";
+import config from "virtual:mercur/config";
 import { getMenuItemsByType, getNestedMenuItems } from "../../../utils/routes";
 
 export const MainLayout = () => {
@@ -178,7 +179,14 @@ const Header = () => {
           )}
           data-testid="sidebar-header-dropdown-trigger"
         >
-          {fallback ? (
+          {config.logo ? (
+            <img
+              src={config.logo}
+              alt={config.name ?? ""}
+              className="h-6 w-6 rounded-md object-cover"
+              data-testid="sidebar-header-dropdown-avatar"
+            />
+          ) : fallback ? (
             <Avatar
               variant="squared"
               size="xsmall"
@@ -192,18 +200,14 @@ const Header = () => {
             className="block overflow-hidden text-start"
             data-testid="sidebar-header-dropdown-store-name"
           >
-            {name ? (
-              <Text
-                size="small"
-                weight="plus"
-                leading="compact"
-                className="truncate"
-              >
-                {store.name}
-              </Text>
-            ) : (
-              <Skeleton className="h-[9px] w-[120px]" />
-            )}
+            <Text
+              size="small"
+              weight="plus"
+              leading="compact"
+              className="truncate"
+            >
+              {config.name ?? store?.name}
+            </Text>
           </div>
           <EllipsisHorizontal className="text-ui-fg-muted" />
         </DropdownMenu.Trigger>
@@ -216,12 +220,21 @@ const Header = () => {
               className="flex items-center gap-x-3 px-2 py-1"
               data-testid="sidebar-header-dropdown-user-info"
             >
-              <Avatar
-                variant="squared"
-                size="small"
-                fallback={fallback}
-                data-testid="sidebar-header-dropdown-user-avatar"
-              />
+              {config.logo ? (
+                <img
+                  src={config.logo}
+                  alt={config.name ?? ""}
+                  className="h-8 w-8 rounded-md object-cover"
+                  data-testid="sidebar-header-dropdown-user-avatar"
+                />
+              ) : (
+                <Avatar
+                  variant="squared"
+                  size="small"
+                  fallback={fallback}
+                  data-testid="sidebar-header-dropdown-user-avatar"
+                />
+              )}
               <div
                 className="flex flex-col overflow-hidden"
                 data-testid="sidebar-header-dropdown-user-details"
@@ -233,7 +246,7 @@ const Header = () => {
                   className="truncate"
                   data-testid="sidebar-header-dropdown-user-name"
                 >
-                  {name}
+                  {config.name ?? name}
                 </Text>
                 <Text
                   size="xsmall"

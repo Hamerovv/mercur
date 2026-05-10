@@ -30,8 +30,20 @@ import {
   updateStoresWorkflow,
 } from "@medusajs/medusa/core-flows";
 import { ApiKey } from "../../.medusa/types/query-entry-points";
-import { MercurModules } from "@mercurjs/types";
-import { createSellerDefaultsWorkflow } from '@mercurjs/core/workflows'
+import { MercurModules, SellerRole, SellerStatus } from "@mercurjs/types";
+import {
+  createSellerDefaultsWorkflow,
+  createSellerShippingOptionsWorkflow,
+  createSellerShippingProfilesWorkflow,
+} from "@mercurjs/core/workflows";
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const scryptKdf = require("scrypt-kdf");
+
+async function hashPassword(password: string): Promise<string> {
+  const hash = await scryptKdf.kdf(password, { logN: 15, r: 8, p: 1 });
+  return hash.toString("base64");
+}
 
 const updateStoreCurrencies = createWorkflow(
   "update-store-currencies",
@@ -78,7 +90,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
   });
 
   if (!defaultSalesChannel.length) {
-    // create the default sales channel
     const { result: salesChannelResult } = await createSalesChannelsWorkflow(
       container
     ).run({
@@ -119,7 +130,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
   logger.info("Seeding region data...");
   const regionModuleService = container.resolve(Modules.REGION);
 
-  // Check if any of the countries are already assigned to a region
   const existingRegions = await regionModuleService.listRegions({}, {
     relations: ["countries"],
   });
@@ -135,13 +145,11 @@ export default async function seedDemoData({ container }: ExecArgs) {
 
   let region;
   if (unassignedCountries.length === 0) {
-    // All countries already assigned - find the region that has most of our countries
     region = existingRegions.find(r =>
       r.countries?.some(c => countries.includes(c.iso_2))
     ) || existingRegions[0];
     logger.info("Countries already assigned to a region, skipping region creation.");
   } else if (unassignedCountries.length < countries.length) {
-    // Some countries assigned, some not - only create with unassigned ones
     logger.info(`Some countries already assigned, creating region with: ${unassignedCountries.join(", ")}`);
     const { result: regionResult } = await createRegionsWorkflow(container).run({
       input: {
@@ -157,7 +165,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
     });
     region = regionResult[0];
   } else {
-    // No countries assigned - create full region
     const { result: regionResult } = await createRegionsWorkflow(container).run({
       input: {
         regions: [
@@ -231,7 +238,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
     },
   });
 
-  // Link stock location to fulfillment provider (idempotent)
   try {
     await link.create({
       [Modules.STOCK_LOCATION]: {
@@ -242,7 +248,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
       },
     });
   } catch (error: unknown) {
-    // Ignore if link already exists
     if (!(error instanceof Error && error.message.includes("already exists"))) {
       throw error;
     }
@@ -286,34 +291,13 @@ export default async function seedDemoData({ container }: ExecArgs) {
         {
           name: "Europe",
           geo_zones: [
-            {
-              country_code: "gb",
-              type: "country",
-            },
-            {
-              country_code: "de",
-              type: "country",
-            },
-            {
-              country_code: "dk",
-              type: "country",
-            },
-            {
-              country_code: "se",
-              type: "country",
-            },
-            {
-              country_code: "fr",
-              type: "country",
-            },
-            {
-              country_code: "es",
-              type: "country",
-            },
-            {
-              country_code: "it",
-              type: "country",
-            },
+            { country_code: "gb", type: "country" },
+            { country_code: "de", type: "country" },
+            { country_code: "dk", type: "country" },
+            { country_code: "se", type: "country" },
+            { country_code: "fr", type: "country" },
+            { country_code: "es", type: "country" },
+            { country_code: "it", type: "country" },
           ],
         },
       ],
@@ -348,30 +332,13 @@ export default async function seedDemoData({ container }: ExecArgs) {
             code: "standard",
           },
           prices: [
-            {
-              currency_code: "usd",
-              amount: 10,
-            },
-            {
-              currency_code: "eur",
-              amount: 10,
-            },
-            {
-              region_id: region.id,
-              amount: 10,
-            },
+            { currency_code: "usd", amount: 10 },
+            { currency_code: "eur", amount: 10 },
+            { region_id: region.id, amount: 10 },
           ],
           rules: [
-            {
-              attribute: "enabled_in_store",
-              value: "true",
-              operator: "eq",
-            },
-            {
-              attribute: "is_return",
-              value: "false",
-              operator: "eq",
-            },
+            { attribute: "enabled_in_store", value: "true", operator: "eq" },
+            { attribute: "is_return", value: "false", operator: "eq" },
           ],
         },
         {
@@ -386,30 +353,13 @@ export default async function seedDemoData({ container }: ExecArgs) {
             code: "express",
           },
           prices: [
-            {
-              currency_code: "usd",
-              amount: 10,
-            },
-            {
-              currency_code: "eur",
-              amount: 10,
-            },
-            {
-              region_id: region.id,
-              amount: 10,
-            },
+            { currency_code: "usd", amount: 25 },
+            { currency_code: "eur", amount: 25 },
+            { region_id: region.id, amount: 25 },
           ],
           rules: [
-            {
-              attribute: "enabled_in_store",
-              value: "true",
-              operator: "eq",
-            },
-            {
-              attribute: "is_return",
-              value: "false",
-              operator: "eq",
-            },
+            { attribute: "enabled_in_store", value: "true", operator: "eq" },
+            { attribute: "is_return", value: "false", operator: "eq" },
           ],
         },
       ],
@@ -417,7 +367,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
   }
   logger.info("Finished seeding fulfillment data.");
 
-  // Link sales channel to stock location (idempotent - workflow handles duplicates)
   try {
     await linkSalesChannelsToStockLocationWorkflow(container).run({
       input: {
@@ -426,7 +375,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
       },
     });
   } catch (error: unknown) {
-    // Ignore if link already exists
     if (!(error instanceof Error && error.message.includes("already"))) {
       throw error;
     }
@@ -464,7 +412,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
     publishableApiKey = publishableApiKeyResult as ApiKey;
   }
 
-  // Link sales channel to API key (idempotent)
   try {
     await linkSalesChannelsToApiKeyWorkflow(container).run({
       input: {
@@ -473,7 +420,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
       },
     });
   } catch (error: unknown) {
-    // Ignore if link already exists
     if (!(error instanceof Error && error.message.includes("already"))) {
       throw error;
     }
@@ -481,10 +427,10 @@ export default async function seedDemoData({ container }: ExecArgs) {
   }
   logger.info("Finished seeding publishable API key data.");
 
-  logger.info("Seeding product data...");
+  logger.info("Seeding book genre categories...");
 
   const productCategoryModule = container.resolve(Modules.PRODUCT);
-  const categoryNames = ["Shirts", "Sweatshirts", "Pants", "Merch"];
+  const categoryNames = ["Fiction", "Non-Fiction", "Science", "History", "Children's", "Business"];
   const existingCategories = await productCategoryModule.listProductCategories({
     name: categoryNames,
   });
@@ -492,7 +438,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
   let categoryResult;
   if (existingCategories.length === categoryNames.length) {
     categoryResult = existingCategories;
-    logger.info("Product categories already exist, skipping.");
+    logger.info("Book categories already exist, skipping.");
   } else {
     const categoriesToCreate = categoryNames.filter(
       (name) => !existingCategories.find((c) => c.name === name)
@@ -510,520 +456,121 @@ export default async function seedDemoData({ container }: ExecArgs) {
     categoryResult = [...existingCategories, ...newCategories];
   }
 
-  const productHandles = ["t-shirt", "sweatshirt", "sweatpants", "shorts"];
-  const existingProducts = await productCategoryModule.listProducts({
-    handle: productHandles,
+  const bookHandles = ["the-great-gatsby", "a-brief-history-of-time"];
+  const existingBooks = await productCategoryModule.listProducts({
+    handle: bookHandles,
   });
 
-  if (existingProducts.length === productHandles.length) {
-    logger.info("Products already exist, skipping.");
+  if (existingBooks.length === bookHandles.length) {
+    logger.info("Sample books already exist, skipping.");
   } else {
+    const fictionCategory = categoryResult.find((c: { name: string }) => c.name === "Fiction");
+    const scienceCategory = categoryResult.find((c: { name: string }) => c.name === "Science");
+
     await createProductsWorkflow(container).run({
       input: {
         products: [
           {
-            title: "Medusa T-Shirt",
-            category_ids: [
-              categoryResult.find((cat: { name: string }) => cat.name === "Shirts")!.id,
-            ],
-            description:
-              "Reimagine the feeling of a classic T-shirt. With our cotton T-shirts, everyday essentials no longer have to be ordinary.",
-            handle: "t-shirt",
-            weight: 400,
+            title: "The Great Gatsby",
+            handle: "the-great-gatsby",
+            description: "A story of the fabulously wealthy Jay Gatsby and his love for the beautiful Daisy Buchanan.",
             status: ProductStatus.PUBLISHED,
             shipping_profile_id: shippingProfile.id,
-            images: [
-              {
-                url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-black-front.png",
-              },
-              {
-                url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-black-back.png",
-              },
-              {
-                url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-white-front.png",
-              },
-              {
-                url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/tee-white-back.png",
-              },
-            ],
+            metadata: {
+              author: "F. Scott Fitzgerald",
+              isbn: "978-0743273565",
+            },
+            category_ids: fictionCategory ? [fictionCategory.id] : [],
             options: [
               {
-                title: "Size",
-                values: ["S", "M", "L", "XL"],
-              },
-              {
-                title: "Color",
-                values: ["Black", "White"],
+                title: "Condition",
+                values: ["New", "Like New", "Good"],
               },
             ],
             variants: [
               {
-                title: "S / Black",
-                sku: "SHIRT-S-BLACK",
-                options: {
-                  Size: "S",
-                  Color: "Black",
-                },
+                title: "New",
+                sku: "GATSBY-NEW",
+                options: { Condition: "New" },
                 prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
+                  { amount: 1299, currency_code: "usd" },
+                  { amount: 1199, currency_code: "eur" },
                 ],
               },
               {
-                title: "S / White",
-                sku: "SHIRT-S-WHITE",
-                options: {
-                  Size: "S",
-                  Color: "White",
-                },
+                title: "Like New",
+                sku: "GATSBY-LIKENEW",
+                options: { Condition: "Like New" },
                 prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
+                  { amount: 899, currency_code: "usd" },
+                  { amount: 799, currency_code: "eur" },
                 ],
               },
               {
-                title: "M / Black",
-                sku: "SHIRT-M-BLACK",
-                options: {
-                  Size: "M",
-                  Color: "Black",
-                },
+                title: "Good",
+                sku: "GATSBY-GOOD",
+                options: { Condition: "Good" },
                 prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
-                ],
-              },
-              {
-                title: "M / White",
-                sku: "SHIRT-M-WHITE",
-                options: {
-                  Size: "M",
-                  Color: "White",
-                },
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
-                ],
-              },
-              {
-                title: "L / Black",
-                sku: "SHIRT-L-BLACK",
-                options: {
-                  Size: "L",
-                  Color: "Black",
-                },
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
-                ],
-              },
-              {
-                title: "L / White",
-                sku: "SHIRT-L-WHITE",
-                options: {
-                  Size: "L",
-                  Color: "White",
-                },
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
-                ],
-              },
-              {
-                title: "XL / Black",
-                sku: "SHIRT-XL-BLACK",
-                options: {
-                  Size: "XL",
-                  Color: "Black",
-                },
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
-                ],
-              },
-              {
-                title: "XL / White",
-                sku: "SHIRT-XL-WHITE",
-                options: {
-                  Size: "XL",
-                  Color: "White",
-                },
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
+                  { amount: 599, currency_code: "usd" },
+                  { amount: 499, currency_code: "eur" },
                 ],
               },
             ],
-            sales_channels: [
-              {
-                id: defaultSalesChannel[0].id,
-              },
-            ],
+            sales_channels: [{ id: defaultSalesChannel[0].id }],
           },
           {
-            title: "Medusa Sweatshirt",
-            category_ids: [
-              categoryResult.find((cat: { name: string }) => cat.name === "Sweatshirts")!.id,
-            ],
-            description:
-              "Reimagine the feeling of a classic sweatshirt. With our cotton sweatshirt, everyday essentials no longer have to be ordinary.",
-            handle: "sweatshirt",
-            weight: 400,
+            title: "A Brief History of Time",
+            handle: "a-brief-history-of-time",
+            description: "Stephen Hawking's landmark book on cosmology, black holes, and the nature of time.",
             status: ProductStatus.PUBLISHED,
             shipping_profile_id: shippingProfile.id,
-            images: [
-              {
-                url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatshirt-vintage-front.png",
-              },
-              {
-                url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatshirt-vintage-back.png",
-              },
-            ],
+            metadata: {
+              author: "Stephen Hawking",
+              isbn: "978-0553380163",
+            },
+            category_ids: scienceCategory ? [scienceCategory.id] : [],
             options: [
               {
-                title: "Size",
-                values: ["S", "M", "L", "XL"],
+                title: "Condition",
+                values: ["New", "Like New", "Good"],
               },
             ],
             variants: [
               {
-                title: "S",
-                sku: "SWEATSHIRT-S",
-                options: {
-                  Size: "S",
-                },
+                title: "New",
+                sku: "HAWKING-NEW",
+                options: { Condition: "New" },
                 prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
+                  { amount: 1599, currency_code: "usd" },
+                  { amount: 1399, currency_code: "eur" },
                 ],
               },
               {
-                title: "M",
-                sku: "SWEATSHIRT-M",
-                options: {
-                  Size: "M",
-                },
+                title: "Like New",
+                sku: "HAWKING-LIKENEW",
+                options: { Condition: "Like New" },
                 prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
+                  { amount: 999, currency_code: "usd" },
+                  { amount: 899, currency_code: "eur" },
                 ],
               },
               {
-                title: "L",
-                sku: "SWEATSHIRT-L",
-                options: {
-                  Size: "L",
-                },
+                title: "Good",
+                sku: "HAWKING-GOOD",
+                options: { Condition: "Good" },
                 prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
-                ],
-              },
-              {
-                title: "XL",
-                sku: "SWEATSHIRT-XL",
-                options: {
-                  Size: "XL",
-                },
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
+                  { amount: 699, currency_code: "usd" },
+                  { amount: 599, currency_code: "eur" },
                 ],
               },
             ],
-            sales_channels: [
-              {
-                id: defaultSalesChannel[0].id,
-              },
-            ],
-          },
-          {
-            title: "Medusa Sweatpants",
-            category_ids: [
-              categoryResult.find((cat: { name: string }) => cat.name === "Pants")!.id,
-            ],
-            description:
-              "Reimagine the feeling of classic sweatpants. With our cotton sweatpants, everyday essentials no longer have to be ordinary.",
-            handle: "sweatpants",
-            weight: 400,
-            status: ProductStatus.PUBLISHED,
-            shipping_profile_id: shippingProfile.id,
-            images: [
-              {
-                url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatpants-gray-front.png",
-              },
-              {
-                url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/sweatpants-gray-back.png",
-              },
-            ],
-            options: [
-              {
-                title: "Size",
-                values: ["S", "M", "L", "XL"],
-              },
-            ],
-            variants: [
-              {
-                title: "S",
-                sku: "SWEATPANTS-S",
-                options: {
-                  Size: "S",
-                },
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
-                ],
-              },
-              {
-                title: "M",
-                sku: "SWEATPANTS-M",
-                options: {
-                  Size: "M",
-                },
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
-                ],
-              },
-              {
-                title: "L",
-                sku: "SWEATPANTS-L",
-                options: {
-                  Size: "L",
-                },
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
-                ],
-              },
-              {
-                title: "XL",
-                sku: "SWEATPANTS-XL",
-                options: {
-                  Size: "XL",
-                },
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
-                ],
-              },
-            ],
-            sales_channels: [
-              {
-                id: defaultSalesChannel[0].id,
-              },
-            ],
-          },
-          {
-            title: "Medusa Shorts",
-            category_ids: [
-              categoryResult.find((cat: { name: string }) => cat.name === "Merch")!.id,
-            ],
-            description:
-              "Reimagine the feeling of classic shorts. With our cotton shorts, everyday essentials no longer have to be ordinary.",
-            handle: "shorts",
-            weight: 400,
-            status: ProductStatus.PUBLISHED,
-            shipping_profile_id: shippingProfile.id,
-            images: [
-              {
-                url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/shorts-vintage-front.png",
-              },
-              {
-                url: "https://medusa-public-images.s3.eu-west-1.amazonaws.com/shorts-vintage-back.png",
-              },
-            ],
-            options: [
-              {
-                title: "Size",
-                values: ["S", "M", "L", "XL"],
-              },
-            ],
-            variants: [
-              {
-                title: "S",
-                sku: "SHORTS-S",
-                options: {
-                  Size: "S",
-                },
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
-                ],
-              },
-              {
-                title: "M",
-                sku: "SHORTS-M",
-                options: {
-                  Size: "M",
-                },
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
-                ],
-              },
-              {
-                title: "L",
-                sku: "SHORTS-L",
-                options: {
-                  Size: "L",
-                },
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
-                ],
-              },
-              {
-                title: "XL",
-                sku: "SHORTS-XL",
-                options: {
-                  Size: "XL",
-                },
-                prices: [
-                  {
-                    amount: 10,
-                    currency_code: "eur",
-                  },
-                  {
-                    amount: 15,
-                    currency_code: "usd",
-                  },
-                ],
-              },
-            ],
-            sales_channels: [
-              {
-                id: defaultSalesChannel[0].id,
-              },
-            ],
+            sales_channels: [{ id: defaultSalesChannel[0].id }],
           },
         ],
       },
     });
   }
-  logger.info("Finished seeding product data.");
-
-  const { data: seededProducts } = await query.graph({
-    entity: "product",
-    fields: ["id"],
-    filters: {
-      handle: productHandles,
-    },
-  });
+  logger.info("Finished seeding book data.");
 
   logger.info("Seeding inventory levels.");
 
@@ -1041,29 +588,137 @@ export default async function seedDemoData({ container }: ExecArgs) {
   const inventoryLevels: CreateInventoryLevelInput[] = [];
   for (const inventoryItem of inventoryItems) {
     if (!existingItemIds.has(inventoryItem.id)) {
-      const inventoryLevel = {
-        location_id: stockLocation.
-          id,
+      inventoryLevels.push({
+        location_id: stockLocation.id,
         stocked_quantity: 1000000,
         inventory_item_id: inventoryItem.id,
-      };
-      inventoryLevels.push(inventoryLevel);
+      });
     }
   }
 
   if (inventoryLevels.length > 0) {
     await createInventoryLevelsWorkflow(container).run({
-      input: {
-        inventory_levels: inventoryLevels,
-      },
+      input: { inventory_levels: inventoryLevels },
     });
   } else {
     logger.info("Inventory levels already exist, skipping.");
   }
-
   logger.info("Finished seeding inventory levels data.");
 
-  await createSellerDefaultsWorkflow(container).run({})
+  // Create default seller roles (idempotent)
+  await createSellerDefaultsWorkflow(container).run({});
 
-  logger.info("Finished seeding seller data.");
+  // Seed demo seller with shipping profile and options
+  logger.info("Seeding demo seller...");
+  const { data: existingSellers } = await query.graph({
+    entity: "seller",
+    fields: ["id", "name"],
+    filters: { name: "BookHook Books" },
+  });
+
+  if (!existingSellers.length) {
+    const sellerModuleService = container.resolve(MercurModules.SELLER) as any;
+    const authModuleService = container.resolve<IAuthModuleService>(Modules.AUTH);
+
+    // Create seller with OPEN status (already approved)
+    const [seller] = await sellerModuleService.createSellers([{
+      name: "BookHook Books",
+      description: "Your premier source for books of all genres",
+      handle: "bookhook-books",
+      email: "seller@bookshook.com",
+      currency_code: "usd",
+      status: SellerStatus.OPEN,
+    }]);
+
+    // Create member for the seller
+    const [member] = await sellerModuleService.upsertMembers([{
+      email: "seller@bookshook.com",
+      first_name: "Demo",
+      last_name: "Seller",
+    }]);
+
+    // Link member to seller with admin role
+    await sellerModuleService.createSellerMembers([{
+      seller_id: seller.id,
+      member_id: member.id,
+      role_id: SellerRole.SELLER_ADMINISTRATION,
+      is_owner: true,
+    }]);
+
+    // Create auth identity so the member can log in
+    try {
+      const hashedPassword = await hashPassword("Vendor123!");
+      await authModuleService.createAuthIdentities([{
+        provider_identities: [{
+          provider: "emailpass",
+          entity_id: "seller@bookshook.com",
+          provider_metadata: { password: hashedPassword },
+        }],
+        app_metadata: { member: member.id },
+      }]);
+    } catch (err: unknown) {
+      logger.warn(`Could not create seller auth identity: ${err instanceof Error ? err.message : err}`);
+    }
+
+    // Get service zone for seller shipping options
+    const { data: fulfillmentSets } = await query.graph({
+      entity: "fulfillment_set",
+      fields: ["id", "service_zones.id"],
+      filters: { name: "European Warehouse delivery" },
+    });
+    const serviceZoneId = fulfillmentSets?.[0]?.service_zones?.[0]?.id;
+
+    if (serviceZoneId) {
+      // Create seller-specific shipping profile
+      const { result: sellerShippingProfiles } =
+        await createSellerShippingProfilesWorkflow(container).run({
+          input: {
+            shipping_profiles: [{ name: "BookHook Books Shipping", type: "default" }],
+            seller_id: seller.id,
+          },
+        });
+
+      // Create seller-specific shipping option (required for checkout)
+      await createSellerShippingOptionsWorkflow(container).run({
+        input: {
+          shipping_options: [
+            {
+              name: "Standard Shipping",
+              price_type: "flat",
+              provider_id: "manual_manual",
+              service_zone_id: serviceZoneId,
+              shipping_profile_id: sellerShippingProfiles[0].id,
+              type: {
+                label: "Standard",
+                description: "Ship in 2-3 days.",
+                code: "standard",
+              },
+              prices: [
+                { currency_code: "usd", amount: 500 },
+                { currency_code: "eur", amount: 500 },
+                { region_id: region.id, amount: 500 },
+              ],
+              rules: [
+                { attribute: "enabled_in_store", value: "true", operator: "eq" },
+                { attribute: "is_return", value: "false", operator: "eq" },
+              ],
+            },
+          ],
+          seller_id: seller.id,
+        },
+      });
+
+      logger.info(`Seeded seller shipping profile and options for: ${seller.name}`);
+    } else {
+      logger.warn("Could not find service zone — seller shipping options not created");
+    }
+
+    logger.info(
+      `Seeded seller: ${seller.name} | login: seller@bookshook.com / Vendor123!`
+    );
+  } else {
+    logger.info("Demo seller already exists, skipping.");
+  }
+
+  logger.info("Seed complete. Admin: admin@bookshook.com / Admin123! | Seller: seller@bookshook.com / Vendor123!");
 }

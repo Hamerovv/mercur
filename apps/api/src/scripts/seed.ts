@@ -647,7 +647,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
 
     // Create auth identity so the member can log in
     try {
-      const hashedPassword = await hashPassword("Vendor123!");
+      const hashedPassword = await hashPassword("Vendor123");
       await authModuleService.createAuthIdentities([{
         provider_identities: [{
           provider: "emailpass",
@@ -714,11 +714,11 @@ export default async function seedDemoData({ container }: ExecArgs) {
     }
 
     logger.info(
-      `Seeded seller: ${seller.name} | login: seller@bookshook.com / Vendor123!`
+      `Seeded seller: ${seller.name} | login: seller@bookshook.com / Vendor123`
     );
   } else {
     logger.info("Demo seller already exists, skipping.");
   }
 
-  logger.info("Seed complete. Admin: admin@bookshook.com / Admin123! | Seller: seller@bookshook.com / Vendor123!");
+  logger.info("Seed complete. Admin: admin@bookshook.com / Admin123! | Seller: seller@bookshook.com / Vendor123");
 }

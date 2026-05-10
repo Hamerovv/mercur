@@ -76,6 +76,16 @@
 
 None at project start.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 20260510-oom | Fix OOM in Dockerfile.vendor (NODE_OPTIONS=--max-old-space-size=4096) | 2026-05-10 | — | [20260510-oom-fix-dockerfile-vendor](./quick/20260510-oom-fix-dockerfile-vendor/) |
+| 20260510-seller | Fix seed.ts seller missing email + currency_code fields | 2026-05-10 | — | [20260510-seed-seller-required-fields](./quick/20260510-seed-seller-required-fields/) |
+| 20260510-hash | Fix seed.ts password hash: replace crypto.scrypt with scrypt-kdf | 2026-05-10 | — | [20260510-seed-password-hash-fix](./quick/20260510-seed-password-hash-fix/) |
+| 260510-wiv | Restructure Dockerfile to multi-stage with cached npm install layer | 2026-05-10 | b1c73cdb | [260510-wiv-restructure-apps-api-dockerfile-to-cache](./quick/260510-wiv-restructure-apps-api-dockerfile-to-cache/) |
+| 260510-x1u | Fix seed.ts seller member password from Seller123! to Vendor123! | 2026-05-10 | fe849ea0 | [260510-x1u-fix-seed-ts-seller-member-password-from-](./quick/260510-x1u-fix-seed-ts-seller-member-password-from-/) |
+
 ### Technical Debt
 
 | Item | Phase created | Notes |
@@ -86,8 +96,8 @@ None at project start.
 
 ## Session Continuity
 
-**Last session**: 2026-05-10 — Project initialized; roadmap created  
-**Next action**: Run `/gsd-plan-phase 1` to create Phase 1 execution plan  
+**Last session**: 2026-05-10 — Docker stack brought up; fixed seed OOM, scrypt-kdf hash format, seller required fields, Dockerfile npm cache, seed password  
+**Next action**: `docker compose build --no-cache medusa && docker compose down -v && docker compose up` then verify vendor login at http://localhost:7001 with seller@bookshook.com / Vendor123!  
 **Context to carry**: All critical constraints above apply to Phase 1 work; pitfall list from research/SUMMARY.md is the priority order for Phase 1
 
 ---

@@ -1,7 +1,7 @@
 import type { HttpTypes } from "@medusajs/types";
 
 import { t } from "i18next";
-import { Outlet, type RouteObject, type UIMatch } from "react-router-dom";
+import { Navigate, Outlet, type RouteObject, type UIMatch } from "react-router-dom";
 
 import { ProtectedRoute } from "@components/authentication/protected-route";
 import { MainLayout } from "@components/layout/main-layout";
@@ -797,6 +797,10 @@ export function getRouteMap({
                     ],
                   },
                 ],
+              },
+              {
+                path: "/vendors",
+                element: <Navigate to="/stores" replace />,
               },
               {
                 path: "/stores",

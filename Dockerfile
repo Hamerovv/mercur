@@ -1,6 +1,7 @@
-FROM oven/bun:1-alpine
+# ---------- Stage 1: builder ----------
+FROM oven/bun:1-alpine AS builder
 
-RUN apk add --no-cache python3 make g++ nodejs npm jq
+RUN apk add --no-cache python3 make g++ nodejs npm jq curl
 
 WORKDIR /app
 
@@ -28,23 +29,37 @@ RUN bun install
 COPY apps/api/ ./apps/api/
 COPY packages/ ./packages/
 
-# Build workspace packages in dependency order (types → cli → core)
+# Build workspace packages in dependency order (types -> cli -> core)
 RUN cd packages/types && bun run build
 RUN cd packages/cli && bun run build
 # Core: bun run build adds node_modules/.bin to PATH so tsc resolves correctly
 # Allow non-zero exit because upstream TS18046 errors don't affect runtime output
 RUN cd packages/core && bun run build || true
 
-# Build the Medusa API
+# Build the Medusa API (generates /app/apps/api/.medusa/server/*)
 RUN cd apps/api && bunx medusa build
 
-# Install production deps inside the compiled server output
-# Remove bun-specific .npmrc that confuses npm
-RUN rm -f /app/apps/api/.npmrc
+# Remove bun-specific .npmrc inside the built server output before runtime stage picks it up
+RUN rm -f /app/apps/api/.medusa/server/.npmrc || true
+
+# ---------- Stage 2: runtime ----------
+FROM oven/bun:1-alpine AS runtime
+
+RUN apk add --no-cache nodejs npm
+
 WORKDIR /app/apps/api/.medusa/server
-RUN ls /app/apps/api/.medusa/ 2>/dev/null || echo "no .medusa dir"
-RUN ls /app/apps/api/.medusa/server/ 2>/dev/null || echo "no .medusa/server dir"
+
+# Cache key: generated server manifests ONLY. This layer stays cached unless
+# the built package.json/package-lock.json changes (which only happens when
+# upstream apps/api/package.json or its transitive deps change).
+COPY --from=builder /app/apps/api/.medusa/server/package.json ./package.json
+# Copy lockfile if Medusa's build emitted one; tolerate absence with a glob.
+COPY --from=builder /app/apps/api/.medusa/server/package-lock.json* ./
+
 RUN npm install --omit=dev --legacy-peer-deps
+
+# Now copy the rest of the built server output (source-shaped, changes every build)
+COPY --from=builder /app/apps/api/.medusa/server/ ./
 
 EXPOSE 9000
 

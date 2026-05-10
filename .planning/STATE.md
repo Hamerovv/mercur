@@ -85,6 +85,7 @@ None at project start.
 | 20260510-hash | Fix seed.ts password hash: replace crypto.scrypt with scrypt-kdf | 2026-05-10 | — | [20260510-seed-password-hash-fix](./quick/20260510-seed-password-hash-fix/) |
 | 260510-wiv | Restructure Dockerfile to multi-stage with cached npm install layer | 2026-05-10 | b1c73cdb | [260510-wiv-restructure-apps-api-dockerfile-to-cache](./quick/260510-wiv-restructure-apps-api-dockerfile-to-cache/) |
 | 260510-x1u | Fix seed.ts seller member password from Seller123! to Vendor123! | 2026-05-10 | fe849ea0 | [260510-x1u-fix-seed-ts-seller-member-password-from-](./quick/260510-x1u-fix-seed-ts-seller-member-password-from-/) |
+| 260511-vendors | Rename sidebar "Stores" → "Vendors", add /vendors redirect to /stores | 2026-05-11 | 0410d7b0 | [260511-vendors-label-redirect](./quick/260511-vendors-label-redirect/) |
 
 ### Technical Debt
 

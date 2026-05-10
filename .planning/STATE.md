@@ -86,6 +86,7 @@ None at project start.
 | 260510-wiv | Restructure Dockerfile to multi-stage with cached npm install layer | 2026-05-10 | b1c73cdb | [260510-wiv-restructure-apps-api-dockerfile-to-cache](./quick/260510-wiv-restructure-apps-api-dockerfile-to-cache/) |
 | 260510-x1u | Fix seed.ts seller member password from Seller123! to Vendor123! | 2026-05-10 | fe849ea0 | [260510-x1u-fix-seed-ts-seller-member-password-from-](./quick/260510-x1u-fix-seed-ts-seller-member-password-from-/) |
 | 260511-vendors | Rename sidebar "Stores" → "Vendors", add /vendors redirect to /stores | 2026-05-11 | 0410d7b0 | [260511-vendors-label-redirect](./quick/260511-vendors-label-redirect/) |
+| 260511-3bg | Create apps/admin Vite app to serve the custom Mercur admin UI | 2026-05-11 | c8ee69ff | [260511-3bg-create-apps-admin-vite-app-to-serve-the-](./quick/260511-3bg-create-apps-admin-vite-app-to-serve-the-/) |
 
 ### Technical Debt
 
@@ -97,8 +98,8 @@ None at project start.
 
 ## Session Continuity
 
-**Last session**: 2026-05-10 — Docker stack brought up; fixed seed OOM, scrypt-kdf hash format, seller required fields, Dockerfile npm cache, seed password  
-**Next action**: `docker compose build --no-cache medusa && docker compose down -v && docker compose up` then verify vendor login at http://localhost:7001 with seller@bookshook.com / Vendor123!  
+**Last session**: 2026-05-11 — Created apps/admin Vite app; updated Dockerfile to build and copy admin dist; updated medusa-config.ts appDir to path.join(process.cwd(), 'admin')  
+**Next action**: `docker compose build --no-cache medusa && docker compose down -v && docker compose up` then verify admin at http://localhost:9000/dashboard shows Mercur admin UI (Vendors in sidebar)  
 **Context to carry**: All critical constraints above apply to Phase 1 work; pitfall list from research/SUMMARY.md is the priority order for Phase 1
 
 ---

@@ -8,6 +8,7 @@ WORKDIR /app
 # Copy workspace manifests and lockfile for layer caching
 COPY package.json bun.lock turbo.json ./
 COPY apps/api/package.json ./apps/api/
+COPY apps/admin/package.json ./apps/admin/
 COPY packages/cli/package.json ./packages/cli/
 COPY packages/core/package.json ./packages/core/
 COPY packages/types/package.json ./packages/types/
@@ -27,6 +28,7 @@ RUN bun install
 
 # Copy all source
 COPY apps/api/ ./apps/api/
+COPY apps/admin/ ./apps/admin/
 COPY packages/ ./packages/
 
 # Build workspace packages in dependency order (types -> cli -> core)
@@ -39,13 +41,16 @@ RUN cd packages/core && bun run build || true
 # Build the Medusa API (generates /app/apps/api/.medusa/server/*)
 RUN cd apps/api && bunx medusa build
 
+# Build the custom Mercur admin Vite app (produces apps/admin/dist/)
+RUN cd apps/admin && bunx vite build
+
 # Remove bun-specific .npmrc inside the built server output before runtime stage picks it up
 RUN rm -f /app/apps/api/.medusa/server/.npmrc || true
 
 # ---------- Stage 2: runtime ----------
 FROM oven/bun:1-alpine AS runtime
 
-RUN apk add --no-cache nodejs npm
+RUN apk add --no-cache nodejs npm curl
 
 WORKDIR /app/apps/api/.medusa/server
 
@@ -60,6 +65,9 @@ RUN npm install --omit=dev --legacy-peer-deps
 
 # Now copy the rest of the built server output (source-shaped, changes every build)
 COPY --from=builder /app/apps/api/.medusa/server/ ./
+
+# Copy the custom admin SPA into the runtime so DashboardBase can serve /dashboard
+COPY --from=builder /app/apps/admin/dist/ ./admin/dist/
 
 EXPOSE 9000
 

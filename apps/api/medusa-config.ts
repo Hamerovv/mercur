@@ -1,5 +1,6 @@
 import { loadEnv } from '@medusajs/framework/utils'
 import { withMercur } from '@mercurjs/core'
+import path from 'path'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -31,9 +32,9 @@ module.exports = withMercur({
     {
       resolve: '@mercurjs/core/modules/admin-ui',
       options: {
-        appDir: '',
+        appDir: path.join(process.cwd(), 'admin'),
         path: '/dashboard',
-        disable: true
+        disable: false
       }
     },
     {
@@ -41,7 +42,7 @@ module.exports = withMercur({
       options: {
         appDir: '',
         path: '/seller',
-        disable: true
+        disable: false
       }
     },
   ],

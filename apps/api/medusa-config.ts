@@ -6,7 +6,7 @@ loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
 module.exports = withMercur({
   admin: {
-    disable: false,
+    disable: true,
     backendUrl: process.env.MEDUSA_BACKEND_URL || "http://localhost:9000",
   },
   projectConfig: {

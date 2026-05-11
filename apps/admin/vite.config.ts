@@ -31,6 +31,8 @@ export default defineConfig({
       { find: '@providers', replacement: path.resolve(__dirname, '../../packages/admin/src/providers') },
       { find: '@assets', replacement: path.resolve(__dirname, '../../packages/admin/src/assets') },
       { find: /^@\/(.*)/, replacement: path.resolve(__dirname, '../../packages/admin/src/$1') },
+      // packages/admin mixes lodash/debounce (path) with lodash.debounce (standalone)
+      { find: 'lodash/debounce', replacement: 'lodash.debounce' },
     ],
   },
 })

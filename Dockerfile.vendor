@@ -24,6 +24,8 @@ RUN jq 'del(.devDependencies.turbo) | del(.packageManager)' package.json > pkg.t
 
 RUN bun install
 
+ENV NODE_OPTIONS=--max-old-space-size=4096
+
 COPY apps/vendor/ ./apps/vendor/
 COPY apps/api/medusa-config.ts ./apps/api/medusa-config.ts
 COPY packages/ ./packages/

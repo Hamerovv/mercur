@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { AnimatePresence } from "motion/react";
 import { useNavigate } from "react-router-dom";
 
 import { useLogout, useSellers } from "@hooks/api";
+import { isFetchError } from "@lib/is-fetch-error";
 import { queryClient } from "@lib/query-client";
 import { WizardSidebar } from "./wizard-sidebar";
 import { WizardPreview } from "./wizard-preview";
@@ -19,8 +21,15 @@ type OnboardingWizardProps = {
 export const OnboardingWizard = ({ memberEmail }: OnboardingWizardProps) => {
   const navigate = useNavigate();
   const { mutateAsync: logoutMutation } = useLogout();
-  const { seller_members } = useSellers();
+  const { seller_members, isError, error } = useSellers();
   const hasStores = (seller_members?.length ?? 0) > 0;
+
+  useEffect(() => {
+    if (isError && isFetchError(error) && error.status === 401) {
+      queryClient.clear();
+      navigate("/login?reason=Unauthorized", { replace: true });
+    }
+  }, [error, isError, navigate]);
 
   const {
     currentStep,

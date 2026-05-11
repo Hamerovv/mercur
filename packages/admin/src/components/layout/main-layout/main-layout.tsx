@@ -361,7 +361,7 @@ const useCoreRoutes = (): Omit<INavItem, "pathname">[] => {
     },
     {
       icon: <BuildingStorefront />,
-      label: t("stores.domain"),
+      label: "מוכרים",
       to: "/stores",
     },
     {

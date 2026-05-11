@@ -46,7 +46,20 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    command: sh -c "cd /app/apps/api/.medusa/server && npx medusa db:migrate && npx medusa start"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    command: >
+      sh -c "
+        cd /app/apps/api/.medusa/server &&
+        npx medusa db:migrate &&
+        npx medusa user --email admin@bookshook.com --password Admin123! 2>/dev/null || true &&
+        npx medusa exec ./src/scripts/seed.js 2>&1 || true &&
+        npx medusa start
+      "
 
   vendor:
     build:
@@ -55,7 +68,8 @@ services:
     ports:
       - "7001:7001"
     depends_on:
-      - medusa
+      medusa:
+        condition: service_healthy
 
   storefront:
     build:
@@ -70,7 +84,8 @@ services:
       MEDUSA_BACKEND_URL: http://medusa:9000
       PUBLISHABLE_KEY: ${NEXT_PUBLIC_PUBLISHABLE_KEY:-pk_823e1c8c34a62d70030c326c79abbafdd80f117cacc3be366f89e1397c772caa}
     depends_on:
-      - medusa
+      medusa:
+        condition: service_healthy
 
 volumes:
   postgres_data:

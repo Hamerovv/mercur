@@ -208,6 +208,13 @@ const Header = () => {
             >
               {config.name ?? store?.name}
             </Text>
+            <Text
+              size="xsmall"
+              leading="compact"
+              className="text-ui-fg-subtle truncate"
+            >
+              הופכים את הספרים לזהב
+            </Text>
           </div>
           <EllipsisHorizontal className="text-ui-fg-muted" />
         </DropdownMenu.Trigger>

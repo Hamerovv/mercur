@@ -36,7 +36,7 @@ RUN cd packages/types && bun run build
 RUN cd packages/cli && bun run build
 RUN cd packages/dashboard-sdk && bun run build
 RUN cd packages/core && bun run build || true
-RUN cd packages/admin && bun run build
+RUN cd packages/admin && NODE_OPTIONS=--max-old-space-size=4096 bunx tsup --no-dts
 
 # Build the Medusa API (generates /app/apps/api/.medusa/server/*)
 RUN cd apps/api && bunx medusa build

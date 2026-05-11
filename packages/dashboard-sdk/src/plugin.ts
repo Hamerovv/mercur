@@ -148,7 +148,7 @@ export function mercurDashboardPlugin(pluginConfig: MercurConfig): Vite.Plugin {
             config = {
                 ...pluginConfig,
                 backendUrl,
-                base,
+                base: base ?? viteConfig.base,
                 root,
                 srcDir,
                 pluginExtensions,

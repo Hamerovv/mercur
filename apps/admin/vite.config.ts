@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { mercurDashboardPlugin } from '@mercurjs/dashboard-sdk'
+import path from 'path'
 
-// https://vite.dev/config/
 export default defineConfig({
   base: '/dashboard/',
   plugins: [
@@ -13,4 +13,16 @@ export default defineConfig({
       logo: '/bookshook-logo.png',
     }),
   ],
+  resolve: {
+    alias: [
+      {
+        find: '@mercurjs/admin/index.css',
+        replacement: path.resolve(__dirname, '../../packages/admin/src/index.css'),
+      },
+      {
+        find: '@mercurjs/admin',
+        replacement: path.resolve(__dirname, '../../packages/admin/src/index.ts'),
+      },
+    ],
+  },
 })

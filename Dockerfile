@@ -31,12 +31,12 @@ COPY apps/api/ ./apps/api/
 COPY apps/admin/ ./apps/admin/
 COPY packages/ ./packages/
 
-# Build workspace packages in dependency order (types -> cli -> core)
+# Build workspace packages in dependency order
 RUN cd packages/types && bun run build
 RUN cd packages/cli && bun run build
-# Core: bun run build adds node_modules/.bin to PATH so tsc resolves correctly
-# Allow non-zero exit because upstream TS18046 errors don't affect runtime output
+RUN cd packages/dashboard-sdk && bun run build
 RUN cd packages/core && bun run build || true
+RUN cd packages/admin && bun run build
 
 # Build the Medusa API (generates /app/apps/api/.medusa/server/*)
 RUN cd apps/api && bunx medusa build

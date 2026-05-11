@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => { refresh() }, [])
 
   const login = async (email: string, password: string) => {
-    const { token } = await sdk.auth.login("customer", "emailpass", { email, password }) as { token: string }
+    const { token } = await sdk.auth.login("customer", "emailpass", { email, password }) as unknown as { token: string }
     if (token) {
       await sdk.client.fetch("/auth/session", { method: "POST", headers: { Authorization: `Bearer ${token}` } })
     }
@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const register = async (email: string, password: string, firstName: string, lastName: string) => {
-    const { token } = await sdk.auth.register("customer", "emailpass", { email, password }) as { token: string }
+    const { token } = await sdk.auth.register("customer", "emailpass", { email, password }) as unknown as { token: string }
     if (token) {
       await sdk.client.fetch("/auth/session", { method: "POST", headers: { Authorization: `Bearer ${token}` } })
     }

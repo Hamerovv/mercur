@@ -40,6 +40,9 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const scryptKdf = require("scrypt-kdf");
 
+const DEMO_SELLER_EMAIL = "seller@bookshook.com";
+const DEMO_SELLER_PASSWORD = "Vendor123";
+
 async function hashPassword(password: string): Promise<string> {
   const hash = await scryptKdf.kdf(password, { logN: 15, r: 8, p: 1 });
   return hash.toString("base64");
@@ -81,7 +84,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
   const salesChannelModuleService = container.resolve(Modules.SALES_CHANNEL);
   const storeModuleService = container.resolve(Modules.STORE);
 
-  const countries = ["gb", "de", "dk", "se", "fr", "es", "it"];
+  const countries = ["il"];
 
   logger.info("Seeding store data...");
   const [store] = await storeModuleService.listStores();
@@ -109,11 +112,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
       store_id: store.id,
       supported_currencies: [
         {
-          currency_code: "eur",
+          currency_code: "ils",
           is_default: true,
-        },
-        {
-          currency_code: "usd",
         },
       ],
     },
@@ -155,8 +155,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
       input: {
         regions: [
           {
-            name: "Europe",
-            currency_code: "eur",
+            name: "ישראל",
+            currency_code: "ils",
             countries: unassignedCountries,
             payment_providers: ["pp_system_default"],
           },
@@ -169,8 +169,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
       input: {
         regions: [
           {
-            name: "Europe",
-            currency_code: "eur",
+            name: "ישראל",
+            currency_code: "ils",
             countries,
             payment_providers: ["pp_system_default"],
           },
@@ -202,13 +202,13 @@ export default async function seedDemoData({ container }: ExecArgs) {
   logger.info("Seeding stock location data...");
   const stockLocationModule = container.resolve(Modules.STOCK_LOCATION);
   const existingStockLocations = await stockLocationModule.listStockLocations({
-    name: "European Warehouse",
+    name: "מחסן ישראל",
   });
 
   let stockLocation;
   if (existingStockLocations.length) {
     stockLocation = existingStockLocations[0];
-    logger.info("Stock location 'European Warehouse' already exists, skipping.");
+    logger.info("Stock location 'מחסן ישראל' already exists, skipping.");
   } else {
     const { result: stockLocationResult } = await createStockLocationsWorkflow(
       container
@@ -216,10 +216,10 @@ export default async function seedDemoData({ container }: ExecArgs) {
       input: {
         locations: [
           {
-            name: "European Warehouse",
+            name: "מחסן ישראל",
             address: {
-              city: "Copenhagen",
-              country_code: "DK",
+              city: "Tel Aviv",
+              country_code: "IL",
               address_1: "",
             },
           },
@@ -276,28 +276,22 @@ export default async function seedDemoData({ container }: ExecArgs) {
   }
 
   const existingFulfillmentSets = await fulfillmentModuleService.listFulfillmentSets({
-    name: "European Warehouse delivery",
+    name: "מחסן ישראל delivery",
   });
 
   let fulfillmentSet;
   if (existingFulfillmentSets.length) {
     fulfillmentSet = existingFulfillmentSets[0];
-    logger.info("Fulfillment set 'European Warehouse delivery' already exists, skipping.");
+    logger.info("Fulfillment set 'מחסן ישראל delivery' already exists, skipping.");
   } else {
     fulfillmentSet = await fulfillmentModuleService.createFulfillmentSets({
-      name: "European Warehouse delivery",
+      name: "מחסן ישראל delivery",
       type: "shipping",
       service_zones: [
         {
-          name: "Europe",
+          name: "ישראל",
           geo_zones: [
-            { country_code: "gb", type: "country" },
-            { country_code: "de", type: "country" },
-            { country_code: "dk", type: "country" },
-            { country_code: "se", type: "country" },
-            { country_code: "fr", type: "country" },
-            { country_code: "es", type: "country" },
-            { country_code: "it", type: "country" },
+            { country_code: "il", type: "country" },
           ],
         },
       ],
@@ -332,8 +326,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
             code: "standard",
           },
           prices: [
-            { currency_code: "usd", amount: 10 },
-            { currency_code: "eur", amount: 10 },
+            { currency_code: "ils", amount: 10 },
             { region_id: region.id, amount: 10 },
           ],
           rules: [
@@ -353,8 +346,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
             code: "express",
           },
           prices: [
-            { currency_code: "usd", amount: 25 },
-            { currency_code: "eur", amount: 25 },
+            { currency_code: "ils", amount: 25 },
             { region_id: region.id, amount: 25 },
           ],
           rules: [
@@ -493,8 +485,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
                 sku: "GATSBY-NEW",
                 options: { Condition: "New" },
                 prices: [
-                  { amount: 1299, currency_code: "usd" },
-                  { amount: 1199, currency_code: "eur" },
+                  { amount: 1299, currency_code: "ils" },
                 ],
               },
               {
@@ -502,8 +493,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
                 sku: "GATSBY-LIKENEW",
                 options: { Condition: "Like New" },
                 prices: [
-                  { amount: 899, currency_code: "usd" },
-                  { amount: 799, currency_code: "eur" },
+                  { amount: 899, currency_code: "ils" },
                 ],
               },
               {
@@ -511,8 +501,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
                 sku: "GATSBY-GOOD",
                 options: { Condition: "Good" },
                 prices: [
-                  { amount: 599, currency_code: "usd" },
-                  { amount: 499, currency_code: "eur" },
+                  { amount: 599, currency_code: "ils" },
                 ],
               },
             ],
@@ -541,8 +530,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
                 sku: "HAWKING-NEW",
                 options: { Condition: "New" },
                 prices: [
-                  { amount: 1599, currency_code: "usd" },
-                  { amount: 1399, currency_code: "eur" },
+                  { amount: 1399, currency_code: "ils" },
                 ],
               },
               {
@@ -550,8 +538,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
                 sku: "HAWKING-LIKENEW",
                 options: { Condition: "Like New" },
                 prices: [
-                  { amount: 999, currency_code: "usd" },
-                  { amount: 899, currency_code: "eur" },
+                  { amount: 899, currency_code: "ils" },
                 ],
               },
               {
@@ -559,8 +546,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
                 sku: "HAWKING-GOOD",
                 options: { Condition: "Good" },
                 prices: [
-                  { amount: 699, currency_code: "usd" },
-                  { amount: 599, currency_code: "eur" },
+                  { amount: 599, currency_code: "ils" },
                 ],
               },
             ],
@@ -610,33 +596,40 @@ export default async function seedDemoData({ container }: ExecArgs) {
 
   // Seed demo seller with shipping profile and options
   logger.info("Seeding demo seller...");
-  const { data: existingSellers } = await query.graph({
-    entity: "seller",
-    fields: ["id", "name"],
-    filters: { name: "BookHook Books" },
-  });
+  const sellerModuleService = container.resolve(MercurModules.SELLER) as any;
+  const authModuleService = container.resolve<IAuthModuleService>(Modules.AUTH);
 
-  if (!existingSellers.length) {
-    const sellerModuleService = container.resolve(MercurModules.SELLER) as any;
-    const authModuleService = container.resolve<IAuthModuleService>(Modules.AUTH);
+  let [seller] = await sellerModuleService.listSellers(
+    { email: [DEMO_SELLER_EMAIL] },
+    { select: ["id", "name", "email"] }
+  );
+  const isNewSeller = !seller;
 
+  if (isNewSeller) {
     // Create seller with OPEN status (already approved)
-    const [seller] = await sellerModuleService.createSellers([{
+    [seller] = await sellerModuleService.createSellers([{
       name: "BookHook Books",
       description: "Your premier source for books of all genres",
       handle: "bookhook-books",
-      email: "seller@bookshook.com",
-      currency_code: "usd",
+      email: DEMO_SELLER_EMAIL,
+      currency_code: "ils",
       status: SellerStatus.OPEN,
     }]);
+  }
 
-    // Create member for the seller
-    const [member] = await sellerModuleService.upsertMembers([{
-      email: "seller@bookshook.com",
-      first_name: "Demo",
-      last_name: "Seller",
-    }]);
+  // Create or update member for the seller
+  const [member] = await sellerModuleService.upsertMembers([{
+    email: DEMO_SELLER_EMAIL,
+    first_name: "Demo",
+    last_name: "Seller",
+  }]);
 
+  const existingSellerMembers = await sellerModuleService.listSellerMembers(
+    { seller_id: [seller.id], member_id: [member.id] },
+    { select: ["id"] }
+  );
+
+  if (!existingSellerMembers.length) {
     // Link member to seller with admin role
     await sellerModuleService.createSellerMembers([{
       seller_id: seller.id,
@@ -644,27 +637,48 @@ export default async function seedDemoData({ container }: ExecArgs) {
       role_id: SellerRole.SELLER_ADMINISTRATION,
       is_owner: true,
     }]);
+  }
 
-    // Create auth identity so the member can log in
-    try {
-      const hashedPassword = await hashPassword("Vendor123");
+  // Create or repair auth identity so the member can log in
+  try {
+    const hashedPassword = await hashPassword(DEMO_SELLER_PASSWORD);
+    const [providerIdentity] = await authModuleService.listProviderIdentities(
+      { provider: "emailpass", entity_id: DEMO_SELLER_EMAIL },
+      { take: 1 }
+    );
+
+    if (providerIdentity) {
+      if (providerIdentity.auth_identity_id) {
+        await authModuleService.updateAuthIdentities({
+          id: providerIdentity.auth_identity_id,
+          app_metadata: { member_id: member.id },
+        });
+      }
+
+      await authModuleService.updateProviderIdentities({
+        id: providerIdentity.id,
+        provider_metadata: { password: hashedPassword },
+      });
+    } else {
       await authModuleService.createAuthIdentities([{
         provider_identities: [{
           provider: "emailpass",
-          entity_id: "seller@bookshook.com",
+          entity_id: DEMO_SELLER_EMAIL,
           provider_metadata: { password: hashedPassword },
         }],
-        app_metadata: { member: member.id },
+        app_metadata: { member_id: member.id },
       }]);
-    } catch (err: unknown) {
-      logger.warn(`Could not create seller auth identity: ${err instanceof Error ? err.message : err}`);
     }
+  } catch (err: unknown) {
+    logger.warn(`Could not create or repair seller auth identity: ${err instanceof Error ? err.message : err}`);
+  }
 
+  if (isNewSeller) {
     // Get service zone for seller shipping options
     const { data: fulfillmentSets } = await query.graph({
       entity: "fulfillment_set",
       fields: ["id", "service_zones.id"],
-      filters: { name: "European Warehouse delivery" },
+      filters: { name: "מחסן ישראל delivery" },
     });
     const serviceZoneId = fulfillmentSets?.[0]?.service_zones?.[0]?.id;
 
@@ -694,8 +708,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
                 code: "standard",
               },
               prices: [
-                { currency_code: "usd", amount: 500 },
-                { currency_code: "eur", amount: 500 },
+                { currency_code: "ils", amount: 500 },
                 { region_id: region.id, amount: 500 },
               ],
               rules: [
@@ -714,11 +727,11 @@ export default async function seedDemoData({ container }: ExecArgs) {
     }
 
     logger.info(
-      `Seeded seller: ${seller.name} | login: seller@bookshook.com / Vendor123`
+      `Seeded seller: ${seller.name} | login: ${DEMO_SELLER_EMAIL} / ${DEMO_SELLER_PASSWORD}`
     );
   } else {
-    logger.info("Demo seller already exists, skipping.");
+    logger.info("Demo seller already exists, repaired login credentials if needed.");
   }
 
-  logger.info("Seed complete. Admin: admin@bookshook.com / Admin123! | Seller: seller@bookshook.com / Vendor123");
+  logger.info(`Seed complete. Admin: admin@bookshook.com / Admin123! | Seller: ${DEMO_SELLER_EMAIL} / ${DEMO_SELLER_PASSWORD}`);
 }

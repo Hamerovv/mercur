@@ -23,6 +23,14 @@ export default defineConfig({
         find: '@mercurjs/admin',
         replacement: path.resolve(__dirname, '../../packages/admin/src/index.ts'),
       },
+      // packages/admin internal path aliases (from packages/admin/tsconfig.json)
+      { find: '@components', replacement: path.resolve(__dirname, '../../packages/admin/src/components') },
+      { find: '@hooks', replacement: path.resolve(__dirname, '../../packages/admin/src/hooks') },
+      { find: '@lib', replacement: path.resolve(__dirname, '../../packages/admin/src/lib') },
+      { find: '@pages', replacement: path.resolve(__dirname, '../../packages/admin/src/pages') },
+      { find: '@providers', replacement: path.resolve(__dirname, '../../packages/admin/src/providers') },
+      { find: '@assets', replacement: path.resolve(__dirname, '../../packages/admin/src/assets') },
+      { find: /^@\/(.*)/, replacement: path.resolve(__dirname, '../../packages/admin/src/$1') },
     ],
   },
 })

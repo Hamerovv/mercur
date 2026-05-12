@@ -24,7 +24,7 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (!cart) return
-    ;(sdk.store as any).fulfillment.listCartOptions({ cart_id: cart.id })
+    ;(sdk.store as any).fulfillment.listCartOptions({ cart_id: cart!.id })
       .then((res: any) => {
         const opts: ShippingOption[] = (res.shipping_options || []).map((o: any) => ({
           id: o.id,
@@ -50,7 +50,7 @@ export default function CheckoutPage() {
     setLoading(true)
     setError("")
     try {
-      await sdk.store.cart.update(cart.id, {
+      await sdk.store.cart.update(cart!.id, {
         email,
         shipping_address: {
           first_name: firstName,
@@ -82,7 +82,7 @@ export default function CheckoutPage() {
     setLoading(true)
     setError("")
     try {
-      await sdk.store.cart.addShippingMethod(cart.id, {
+      await sdk.store.cart.addShippingMethod(cart!.id, {
         option_id: selectedShipping,
       })
       setStep("confirm")
@@ -97,10 +97,10 @@ export default function CheckoutPage() {
     setLoading(true)
     setError("")
     try {
-      await (sdk.store as any).payment.initiatePaymentSession(cart, {
+      await (sdk.store as any).payment.initiatePaymentSession(cart!.id, {
         provider_id: "pp_system_default",
       })
-      const result = await sdk.store.cart.complete(cart.id) as any
+      const result = await sdk.store.cart.complete(cart!.id) as any
       if (result.type === "order" && result.order?.id) {
         setCart(null)
         router.push(`/order-confirmation?id=${result.order.id}`)
@@ -200,7 +200,7 @@ export default function CheckoutPage() {
         <div className="space-y-4 bg-white rounded-xl p-6 shadow-sm">
           <h2 className="font-semibold text-gray-900">סיכום הזמנה</h2>
           <div className="space-y-2 text-sm">
-            {cart.items.map((item: any) => (
+            {cart!.items.map((item: any) => (
               <div key={item.id} className="flex justify-between text-gray-700">
                 <span>{item.title} × {item.quantity}</span>
                 <span>{formatPrice(item.unit_price * item.quantity)}</span>
@@ -214,7 +214,7 @@ export default function CheckoutPage() {
             )}
             <div className="flex justify-between font-bold text-gray-900 border-t pt-2 mt-2">
               <span>סה"כ</span>
-              <span>{formatPrice(cart.total, cart.currency_code)}</span>
+              <span>{formatPrice(cart!.total, cart!.currency_code)}</span>
             </div>
           </div>
           <p className="text-xs text-gray-500">תשלום: מזומן/צ׳ק בעת קבלה</p>

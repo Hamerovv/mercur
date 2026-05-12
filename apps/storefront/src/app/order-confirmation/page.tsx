@@ -22,7 +22,7 @@ function ConfirmationInner() {
 
 export default function OrderConfirmationPage() {
   return (
-    <Suspense>
+    <Suspense fallback={null}>
       <ConfirmationInner />
     </Suspense>
   )

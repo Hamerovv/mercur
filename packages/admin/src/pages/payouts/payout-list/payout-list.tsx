@@ -15,7 +15,7 @@ const PAGE_SIZE = 10
 
 export const PayoutListTitle = () => {
   return (
-    <Heading level="h2">Payouts</Heading>
+    <Heading level="h2">תשלומים</Heading>
   )
 }
 
@@ -86,7 +86,7 @@ export const PayoutListDataTable = () => {
       ]}
       queryObject={raw}
       noRecords={{
-        message: "No payouts found",
+        message: "לא נמצאו תשלומים",
       }}
     />
   )

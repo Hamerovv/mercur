@@ -77,12 +77,12 @@ services:
       dockerfile: Dockerfile.storefront
       args:
         NEXT_PUBLIC_MEDUSA_BACKEND_URL: http://localhost:9000
-        NEXT_PUBLIC_PUBLISHABLE_KEY: ${NEXT_PUBLIC_PUBLISHABLE_KEY:-pk_823e1c8c34a62d70030c326c79abbafdd80f117cacc3be366f89e1397c772caa}
+        NEXT_PUBLIC_PUBLISHABLE_KEY: ${NEXT_PUBLIC_PUBLISHABLE_KEY:-pk_80ab1b8186df06e8f80c427f2c76e150fb00d0c42db682b74d3661ad8bdcd7bb}
     ports:
       - "8000:8000"
     environment:
       MEDUSA_BACKEND_URL: http://medusa:9000
-      PUBLISHABLE_KEY: ${NEXT_PUBLIC_PUBLISHABLE_KEY:-pk_823e1c8c34a62d70030c326c79abbafdd80f117cacc3be366f89e1397c772caa}
+      PUBLISHABLE_KEY: ${NEXT_PUBLIC_PUBLISHABLE_KEY:-pk_80ab1b8186df06e8f80c427f2c76e150fb00d0c42db682b74d3661ad8bdcd7bb}
     depends_on:
       medusa:
         condition: service_healthy

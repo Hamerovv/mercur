@@ -14,6 +14,8 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
+const TOKEN_KEY = "_bsh_jwt"
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [customer, setCustomer] = useState<Customer | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -29,27 +31,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  useEffect(() => { refresh() }, [])
+  useEffect(() => {
+    const token = localStorage.getItem(TOKEN_KEY)
+    if (token) sdk.client.setToken(token)
+    refresh()
+  }, [])
 
   const login = async (email: string, password: string) => {
-    const { token } = await sdk.auth.login("customer", "emailpass", { email, password }) as unknown as { token: string }
+    const result = await sdk.auth.login("customer", "emailpass", { email, password })
+    const token = typeof result === "string" ? result : null
     if (token) {
-      await sdk.client.fetch("/auth/session", { method: "POST", headers: { Authorization: `Bearer ${token}` } })
+      sdk.client.setToken(token)
+      localStorage.setItem(TOKEN_KEY, token)
     }
     await refresh()
   }
 
   const register = async (email: string, password: string, firstName: string, lastName: string) => {
-    const { token } = await sdk.auth.register("customer", "emailpass", { email, password }) as unknown as { token: string }
+    // Step 1: Create auth identity — JWT has actor_id: "" (no customer entity yet)
+    const registerToken = await sdk.auth.register("customer", "emailpass", { email, password })
+    if (registerToken) sdk.client.setToken(registerToken)
+    // Step 2: Create the customer entity
+    await sdk.store.customer.create({ email, first_name: firstName, last_name: lastName })
+    // Step 3: Login to get fresh JWT with actor_id populated
+    const loginResult = await sdk.auth.login("customer", "emailpass", { email, password })
+    const token = typeof loginResult === "string" ? loginResult : null
     if (token) {
-      await sdk.client.fetch("/auth/session", { method: "POST", headers: { Authorization: `Bearer ${token}` } })
+      sdk.client.setToken(token)
+      localStorage.setItem(TOKEN_KEY, token)
     }
-    await sdk.store.customer.update({ first_name: firstName, last_name: lastName })
     await refresh()
   }
 
   const logout = async () => {
-    await sdk.auth.logout()
+    try { await sdk.auth.logout() } catch { /* ignore */ }
+    sdk.client.clearToken()
+    localStorage.removeItem(TOKEN_KEY)
     setCustomer(null)
   }
 

@@ -886,7 +886,7 @@ export function getRouteMap({
                 path: "/payouts",
                 errorElement: <ErrorBoundary />,
                 handle: {
-                  breadcrumb: () => "Payouts",
+                  breadcrumb: () => "תשלומים",
                 },
                 children: [
                   {
@@ -1183,7 +1183,7 @@ export function getRouteMap({
                 errorElement: <ErrorBoundary />,
                 element: <Outlet />,
                 handle: {
-                  breadcrumb: () => "Commission Rates",
+                  breadcrumb: () => "שיעורי עמלה",
                 },
                 children: [
                   {

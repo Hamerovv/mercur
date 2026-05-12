@@ -22,6 +22,18 @@ export default function RegisterPage() {
     e.preventDefault()
     setError("")
 
+    if (!firstName.trim() || !lastName.trim()) {
+      setError("נא למלא שם פרטי ושם משפחה")
+      return
+    }
+    if (!email.trim()) {
+      setError("נא להזין כתובת אימייל")
+      return
+    }
+    if (password.length < 8) {
+      setError("הסיסמה חייבת להכיל לפחות 8 תווים")
+      return
+    }
     if (password !== confirmPassword) {
       setError("הסיסמאות אינן תואמות")
       return
@@ -36,7 +48,14 @@ export default function RegisterPage() {
         router.push("/account")
       }
     } catch (err: any) {
-      setError(err?.message || "שגיאה בהרשמה, נסה שוב")
+      const msg: string = err?.message || ""
+      if (msg.toLowerCase().includes("already exists") || msg.toLowerCase().includes("already registered")) {
+        setError("כתובת האימייל כבר רשומה במערכת")
+      } else if (msg.toLowerCase().includes("invalid") || msg.toLowerCase().includes("password")) {
+        setError("פרטי ההרשמה אינם תקינים, בדוק ונסה שוב")
+      } else {
+        setError("שגיאה בהרשמה, נסה שוב")
+      }
     } finally {
       setLoading(false)
     }
@@ -47,9 +66,8 @@ export default function RegisterPage() {
       <div className="max-w-md w-full bg-white rounded-2xl shadow-sm p-8 space-y-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900">הרשמה לבוקשוק</h1>
-          <p className="text-sm text-gray-500 mt-1">הופכים את ספרים לזהב</p>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
           {error && (
             <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm">{error}</div>
           )}

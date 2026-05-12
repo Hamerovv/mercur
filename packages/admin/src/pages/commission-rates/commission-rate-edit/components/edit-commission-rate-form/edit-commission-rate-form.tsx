@@ -196,7 +196,7 @@ export const EditCommissionRateForm = ({
         });
       }
 
-      toast.success("Commission rate updated successfully");
+      toast.success("שיעור העמלה עודכן בהצלחה");
       handleSuccess();
     } catch (e: any) {
       toast.error(e.message);
@@ -362,7 +362,7 @@ export const EditCommissionRateForm = ({
               name="name"
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>Name</Form.Label>
+                  <Form.Label>שם</Form.Label>
                   <Form.Control>
                     <Input {...field} />
                   </Form.Control>
@@ -375,7 +375,7 @@ export const EditCommissionRateForm = ({
               name="code"
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>Code</Form.Label>
+                  <Form.Label>קוד</Form.Label>
                   <Form.Control>
                     <Input {...field} />
                   </Form.Control>
@@ -388,15 +388,15 @@ export const EditCommissionRateForm = ({
               name="type"
               render={({ field: { onChange, ref, ...field } }) => (
                 <Form.Item>
-                  <Form.Label>Type</Form.Label>
+                  <Form.Label>סוג</Form.Label>
                   <Form.Control>
                     <Select {...field} onValueChange={onChange}>
                       <Select.Trigger ref={ref}>
                         <Select.Value />
                       </Select.Trigger>
                       <Select.Content>
-                        <Select.Item value="percentage">Percentage</Select.Item>
-                        <Select.Item value="fixed">Fixed</Select.Item>
+                        <Select.Item value="percentage">אחוז</Select.Item>
+                        <Select.Item value="fixed">קבוע</Select.Item>
                       </Select.Content>
                     </Select>
                   </Form.Control>
@@ -409,15 +409,15 @@ export const EditCommissionRateForm = ({
               name="target"
               render={({ field: { onChange, ref, ...field } }) => (
                 <Form.Item>
-                  <Form.Label>Target</Form.Label>
+                  <Form.Label>יעד</Form.Label>
                   <Form.Control>
                     <Select {...field} onValueChange={onChange}>
                       <Select.Trigger ref={ref}>
                         <Select.Value />
                       </Select.Trigger>
                       <Select.Content>
-                        <Select.Item value="item">Item</Select.Item>
-                        <Select.Item value="shipping">Shipping</Select.Item>
+                        <Select.Item value="item">פריט</Select.Item>
+                        <Select.Item value="shipping">משלוח</Select.Item>
                       </Select.Content>
                     </Select>
                   </Form.Control>
@@ -430,11 +430,11 @@ export const EditCommissionRateForm = ({
               name="currency_code"
               render={({ field: { onChange, ref, ...field } }) => (
                 <Form.Item>
-                  <Form.Label>Currency Code</Form.Label>
+                  <Form.Label>קוד מטבע</Form.Label>
                   <Form.Control>
                     <Select {...field} onValueChange={onChange}>
                       <Select.Trigger ref={ref}>
-                        <Select.Value placeholder="Select currency" />
+                        <Select.Value placeholder="בחר מטבע" />
                       </Select.Trigger>
                       <Select.Content>
                         {storeCurrencies.map((currency) => (
@@ -457,7 +457,7 @@ export const EditCommissionRateForm = ({
               name="value"
               render={({ field: { value, onChange, ...field } }) => (
                 <Form.Item>
-                  <Form.Label>Rate</Form.Label>
+                  <Form.Label>שיעור</Form.Label>
                   <Form.Control>
                     {watchType === "percentage" ? (
                       <PercentageInput
@@ -492,7 +492,7 @@ export const EditCommissionRateForm = ({
               name="min_amount"
               render={({ field: { value, onChange, ...field } }) => (
                 <Form.Item>
-                  <Form.Label>Minimum Amount</Form.Label>
+                  <Form.Label>סכום מינימלי</Form.Label>
                   <Form.Control>
                     <CurrencyInput
                       min={0}
@@ -516,7 +516,7 @@ export const EditCommissionRateForm = ({
               name="priority"
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>Priority</Form.Label>
+                  <Form.Label>עדיפות</Form.Label>
                   <Form.Control>
                     <Input type="number" {...field} />
                   </Form.Control>
@@ -530,7 +530,7 @@ export const EditCommissionRateForm = ({
               render={({ field: { value, onChange, ...field } }) => (
                 <Form.Item>
                   <div className="flex items-start justify-between">
-                    <Form.Label>Include Tax</Form.Label>
+                    <Form.Label>כולל מע"מ</Form.Label>
                     <Form.Control>
                       <Switch
                         {...field}

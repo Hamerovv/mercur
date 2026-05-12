@@ -14,8 +14,16 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
     setError("")
+    if (!email.trim()) {
+      setError("נא להזין כתובת אימייל")
+      return
+    }
+    if (!password) {
+      setError("נא להזין סיסמה")
+      return
+    }
+    setLoading(true)
     try {
       await login(email, password)
       router.push("/account")
@@ -31,9 +39,8 @@ export default function LoginPage() {
       <div className="max-w-md w-full bg-white rounded-2xl shadow-sm p-8 space-y-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900">התחברות לבוקשוק</h1>
-          <p className="text-sm text-gray-500 mt-1">הופכים את ספרים לזהב</p>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
           {error && (
             <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm">{error}</div>
           )}

@@ -127,6 +127,17 @@ export default async function seedDemoData({ container }: ExecArgs) {
       },
     },
   });
+
+  await updateStoresWorkflow(container).run({
+    input: {
+      selector: { id: store.id },
+      update: {
+        name: "BookShook",
+      },
+    },
+  });
+  logger.info("Updated store name to BookShook.");
+
   logger.info("Seeding region data...");
   const regionModuleService = container.resolve(Modules.REGION);
 

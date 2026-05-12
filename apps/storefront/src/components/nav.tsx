@@ -10,7 +10,7 @@ export default function Nav() {
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 h-24 flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <div className="flex flex-col items-center">
             <img src="/bookshook-logo.png" alt="בוקשוק" className="h-20 w-auto" />

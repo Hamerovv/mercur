@@ -84,9 +84,12 @@ export default function CartPage() {
           <span>סה&quot;כ</span>
           <span>{formatPrice(cart.total, cart.currency_code)}</span>
         </div>
-        <button className="mt-4 w-full bg-gray-900 text-white py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors">
+        <Link
+          href="/checkout"
+          className="mt-4 block w-full bg-gray-900 text-white py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors text-center"
+        >
           מעבר לתשלום
-        </button>
+        </Link>
       </div>
     </div>
   )

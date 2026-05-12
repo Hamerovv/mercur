@@ -32,6 +32,7 @@ type CartCtx = {
   removeItem: (lineItemId: string) => Promise<void>
   updateItem: (lineItemId: string, quantity: number) => Promise<void>
   itemCount: number
+  setCart: (cart: Cart | null) => void
 }
 
 const CartContext = createContext<CartCtx | null>(null)
@@ -142,7 +143,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ cart, loading, addItem, removeItem, updateItem, itemCount }}
+      value={{ cart, loading, addItem, removeItem, updateItem, itemCount, setCart }}
     >
       {children}
     </CartContext.Provider>

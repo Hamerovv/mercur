@@ -127,7 +127,7 @@ function SellerTab() {
           נהל את המוצרים, ההזמנות והתשלומים שלך בממשק המוכר.
         </p>
         <a
-          href={VENDOR_URL}
+          href={`${VENDOR_URL}/login`}
           className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-6 rounded-lg transition"
         >
           כניסה לממשק המוכר

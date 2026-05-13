@@ -117,7 +117,41 @@ function BuyerTab() {
   )
 }
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
+const TOKEN_KEY = "_bsh_jwt"
+
 function SellerTab() {
+  const [bridgeLoading, setBridgeLoading] = useState(false)
+  const [bridgeError, setBridgeError] = useState<string | null>(null)
+
+  const handleBecomeSeller = async () => {
+    setBridgeError(null)
+    setBridgeLoading(true)
+    try {
+      const token = localStorage.getItem(TOKEN_KEY)
+      if (!token) throw new Error("לא מחובר")
+
+      const res = await fetch(`${BACKEND_URL}/store/seller-bridge`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error((body as any).message || "שגיאה בשרת")
+      }
+
+      const { otp_token } = await res.json()
+      window.location.href = `${VENDOR_URL}/become-seller?otp=${encodeURIComponent(otp_token)}`
+    } catch (err: any) {
+      setBridgeError(err?.message || "שגיאה, נסה שוב")
+      setBridgeLoading(false)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-center">
@@ -136,14 +170,18 @@ function SellerTab() {
       <div className="bg-white rounded-xl p-6 shadow-sm">
         <h3 className="font-semibold text-gray-900 mb-2">רוצה להתחיל למכור?</h3>
         <p className="text-sm text-gray-600 mb-3">
-          אם עדיין לא נרשמת כמוכר, לחץ כדי להתחיל את תהליך ההצטרפות.
+          הצטרפות כמוכר ללא צורך בהרשמה נוספת — אנחנו מזהים אותך אוטומטית.
         </p>
-        <a
-          href={`${VENDOR_URL}/onboarding`}
-          className="inline-block text-amber-600 hover:underline text-sm font-medium"
+        {bridgeError && (
+          <p className="text-xs text-red-600 mb-2">{bridgeError}</p>
+        )}
+        <button
+          onClick={handleBecomeSeller}
+          disabled={bridgeLoading}
+          className="inline-block text-amber-600 hover:underline text-sm font-medium disabled:opacity-50"
         >
-          הצטרפות כמוכר ←
-        </a>
+          {bridgeLoading ? "מעביר..." : "הצטרפות כמוכר ←"}
+        </button>
       </div>
     </div>
   )

@@ -1426,6 +1426,13 @@ export function getRouteMap({
               lazy: () => import("./pages/onboarding"),
             },
             {
+              path: "/become-seller",
+              lazy: async () => {
+                const { BecomeSeller } = await import("./pages/become-seller");
+                return { Component: BecomeSeller };
+              },
+            },
+            {
               path: "/invite",
               lazy: () => import("./pages/invite"),
             },

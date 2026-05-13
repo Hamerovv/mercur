@@ -17,7 +17,7 @@ export default function AddToCart({ variantId }: { variantId: string }) {
     <button
       onClick={handleAdd}
       disabled={loading}
-      className="mt-6 w-full bg-gray-900 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-700 disabled:opacity-50 transition-colors"
+      className="mt-6 w-full bg-amber-500 hover:bg-amber-600 text-white py-4 px-6 rounded-2xl font-bold text-lg disabled:opacity-50 transition-colors shadow-md hover:shadow-lg"
     >
       {loading ? "מוסיף..." : added ? "נוסף לסל ✓" : "הוסף לסל"}
     </button>

@@ -3731,6 +3731,9 @@
       }
     }
   },
+  "payouts": {
+    "domain": "תשלומים"
+  },
   "auth": {
     "login": {
       "authenticationFailed": "האימות נכשל",

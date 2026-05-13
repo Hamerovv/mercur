@@ -49,8 +49,8 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <Link href={`/products/${product.handle}`} className="group">
-      <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-        <div className="aspect-square relative bg-gray-100">
+      <div className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-amber-200 shadow-sm hover:shadow-lg transition-all duration-200">
+        <div className="aspect-[3/4] relative bg-amber-50">
           {product.thumbnail ? (
             <Image
               src={product.thumbnail}
@@ -59,26 +59,29 @@ export default function ProductCard({ product }: { product: Product }) {
               className="object-cover group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-              אין תמונה
+            <div className="w-full h-full flex flex-col items-center justify-center text-amber-300 gap-2">
+              <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              <span className="text-xs">אין תמונה</span>
             </div>
           )}
           <button
             onClick={toggle}
-            className="absolute top-2 left-2 z-10 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow hover:scale-110 transition-transform"
+            className="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:scale-110 transition-transform"
             aria-label={liked ? "הסר ממשאלות" : "הוסף למשאלות"}
           >
-            <span className={`text-lg ${liked ? "text-red-500" : "text-gray-300"}`}>
+            <span className={`text-base ${liked ? "text-red-500" : "text-gray-300"}`}>
               {liked ? "❤️" : "🤍"}
             </span>
           </button>
         </div>
         <div className="p-4">
-          <h3 className="font-medium text-gray-900 text-sm leading-snug">
+          <h3 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-2">
             {product.title}
           </h3>
           {price !== null && (
-            <p className="text-gray-600 text-sm mt-1">{formatPrice(price)}</p>
+            <p className="text-amber-600 font-bold text-base mt-2">{formatPrice(price)}</p>
           )}
         </div>
       </div>

@@ -30,9 +30,9 @@ export default async function ProductPage({
   const price = variant ? getVariantPrice(variant) : null
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-        <div className="aspect-square relative bg-gray-100 rounded-xl overflow-hidden">
+    <div className="max-w-5xl mx-auto px-6 py-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+        <div className="aspect-[3/4] relative bg-amber-50 rounded-2xl overflow-hidden shadow-md">
           {product.thumbnail ? (
             <Image
               src={product.thumbnail}
@@ -41,21 +41,24 @@ export default async function ProductPage({
               className="object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400">
-              אין תמונה
+            <div className="w-full h-full flex flex-col items-center justify-center text-amber-200 gap-3">
+              <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              <span className="text-sm">אין תמונה</span>
             </div>
           )}
         </div>
 
-        <div className="flex flex-col">
-          <h1 className="text-2xl font-bold text-gray-900">{product.title}</h1>
+        <div className="flex flex-col gap-4">
+          <h1 className="text-3xl font-extrabold text-gray-900 leading-tight">{product.title}</h1>
 
           {price !== null && (
-            <p className="text-xl text-gray-700 mt-3">{formatPrice(price)}</p>
+            <p className="text-3xl font-bold text-amber-600">{formatPrice(price)}</p>
           )}
 
           {product.description && (
-            <p className="text-gray-600 mt-4 leading-relaxed text-sm">
+            <p className="text-gray-600 leading-relaxed text-base border-t border-gray-100 pt-4">
               {product.description}
             </p>
           )}

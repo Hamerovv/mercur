@@ -129,10 +129,8 @@ const Logout = () => {
   const handleLogout = async () => {
     await logoutMutation(undefined, {
       onSuccess: () => {
-        /**
-         * When the user logs out, we want to clear the query cache
-         */
         queryClient.clear();
+        sessionStorage.removeItem("mercur_was_authenticated");
         navigate("/login");
       },
     });

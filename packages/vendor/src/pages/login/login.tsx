@@ -54,12 +54,13 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const reason = searchParams.get("reason") || "";
+  const hadPriorSession = typeof sessionStorage !== "undefined" && !!sessionStorage.getItem("mercur_was_authenticated");
   const reasonMessage =
     reason === "seller-created"
       ? t("login.storeCreated")
-      : reason && reason.toLowerCase() === "unauthorized"
+      : reason && reason.toLowerCase() === "unauthorized" && hadPriorSession
         ? t("login.sessionExpired")
-        : reason;
+        : "";
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -99,6 +100,7 @@ const LoginForm = () => {
         },
         onSuccess: () => {
           sessionStorage.removeItem("mercur_force_reauth");
+          sessionStorage.setItem("mercur_was_authenticated", "1");
           const email = form.getValues("email");
           setTimeout(() => {
             navigate("/store-select", {

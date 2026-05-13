@@ -30,13 +30,13 @@ export const CommissionRateGeneralSection = ({
         <Heading>{commissionRate.name}</Heading>
         <div className="flex items-center gap-4">
           <StatusBadge color={commissionRate.is_enabled ? "green" : "grey"}>
-            {commissionRate.is_enabled ? "Enabled" : "Disabled"}
+            {commissionRate.is_enabled ? "מופעל" : "מושבת"}
           </StatusBadge>
           <CommissionRateActions commissionRate={commissionRate} />
         </div>
       </div>
       <SectionRow
-        title="Code"
+        title="קוד"
         value={
           <Badge size="2xsmall" className="uppercase">
             {commissionRate.code}
@@ -44,29 +44,29 @@ export const CommissionRateGeneralSection = ({
         }
       />
       <SectionRow
-        title="Type"
+        title="סוג"
         value={
           <Badge
             size="2xsmall"
             color={commissionRate.type === "percentage" ? "blue" : "grey"}
           >
-            {commissionRate.type === "percentage" ? "Percentage" : "Fixed"}
+            {commissionRate.type === "percentage" ? "אחוז" : "קבוע"}
           </Badge>
         }
       />
-      <SectionRow title="Value" value={formatValue()} />
+      <SectionRow title="שיעור" value={formatValue()} />
       <SectionRow
-        title="Target"
-        value={commissionRate.target === "item" ? "Item" : "Shipping"}
+        title="יעד"
+        value={commissionRate.target === "item" ? "פריט" : "משלוח"}
       />
       <SectionRow
-        title="Include Tax"
-        value={commissionRate.include_tax ? "Yes" : "No"}
+        title="כולל מע&quot;מ"
+        value={commissionRate.include_tax ? "כן" : "לא"}
       />
-      <SectionRow title="Priority" value={String(commissionRate.priority)} />
+      <SectionRow title="עדיפות" value={String(commissionRate.priority)} />
       {commissionRate.min_amount != null && (
         <SectionRow
-          title="Minimum Amount"
+          title="סכום מינימלי"
           value={
             commissionRate.currency_code
               ? `${commissionRate.min_amount} ${commissionRate.currency_code.toUpperCase()}`
@@ -97,8 +97,8 @@ const CommissionRateActions = ({
         onSuccess: () => {
           toast.success(
             newEnabled
-              ? "Commission rate enabled successfully"
-              : "Commission rate disabled successfully"
+              ? "שיעור העמלה הופעל בהצלחה"
+              : "שיעור העמלה הושבת בהצלחה"
           )
         },
         onError: (e) => {
@@ -111,7 +111,7 @@ const CommissionRateActions = ({
   const handleDelete = async () => {
     const res = await prompt({
       title: t("general.areYouSure"),
-      description: `Are you sure you want to delete the commission rate "${commissionRate.name}"?`,
+      description: `האם אתה בטוח שברצונך למחוק את שיעור העמלה "${commissionRate.name}"?`,
       confirmText: t("actions.delete"),
       cancelText: t("actions.cancel"),
     })
@@ -122,7 +122,7 @@ const CommissionRateActions = ({
 
     await mutateAsync(undefined, {
       onSuccess: () => {
-        toast.success("Commission rate deleted successfully")
+        toast.success("שיעור העמלה נמחק בהצלחה")
         navigate("/settings/commission-rates", { replace: true })
       },
       onError: (e) => {

@@ -6,9 +6,9 @@ import { Link } from "react-router-dom"
 export const CommissionRateListTitle = () => {
   return (
     <div>
-      <Heading>Commission Rates</Heading>
+      <Heading>שיעורי עמלה</Heading>
       <Text className="text-ui-fg-subtle" size="small">
-        Manage commission rates and rules for your marketplace.
+        ניהול שיעורי עמלה וכללים עבור המרקטפלייס שלך.
       </Text>
     </div>
   )

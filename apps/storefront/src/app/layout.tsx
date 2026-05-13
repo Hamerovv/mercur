@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import "./globals.css"
 import { CartProvider } from "@/context/cart"
+import { AuthProvider } from "@/context/auth"
 import Nav from "@/components/nav"
 
 export const metadata: Metadata = {
@@ -19,10 +20,12 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl">
       <body>
-        <CartProvider>
-          <Nav />
-          <main className="min-h-screen bg-gray-50">{children}</main>
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <Nav />
+            <main className="min-h-screen bg-gray-50">{children}</main>
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   )

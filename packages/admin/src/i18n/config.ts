@@ -4,7 +4,8 @@ import translations from "./translations"
 
 export const defaultI18nOptions: InitOptions = {
   debug: process.env.NODE_ENV === "development",
-  fallbackLng: "en",
+  lng: "he",
+  fallbackLng: "he",
   interpolation: {
     escapeValue: false,
   },

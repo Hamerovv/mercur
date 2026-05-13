@@ -86,7 +86,7 @@ const useSettingRoutes = (): INavItem[] => {
         to: "/settings/locations",
       },
       {
-        label: "Commission Rates",
+        label: "שיעורי עמלה",
         to: "/settings/commission-rates",
       },
       ...extensionNavItems,

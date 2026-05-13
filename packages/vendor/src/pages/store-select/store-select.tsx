@@ -1,4 +1,4 @@
-import { Children, ReactNode } from "react";
+import { Children, ReactNode, useEffect } from "react";
 import { ChevronRight, Plus, Spinner } from "@medusajs/icons";
 import { Avatar, Heading, StatusBadge, Text } from "@medusajs/ui";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import AvatarBox from "@components/common/logo-box/avatar-box";
 import { AuthLayout } from "@components/layout/auth-layout";
 import { useSelectSeller, useSellers } from "@hooks/api";
+import { isFetchError } from "@lib/is-fetch-error";
+import { queryClient } from "@lib/query-client";
 import { SellerMemberDTO, SellerStatus } from "@mercurjs/types";
 
 const getSellerStatusBadge = (
@@ -31,7 +33,12 @@ const getSellerStatusBadge = (
 };
 
 const StoreSelectLogo = () => {
-  return <AvatarBox />;
+  return (
+    <div className="flex flex-col items-center">
+      <AvatarBox />
+      <p className="text-ui-fg-subtle text-sm mt-1">הופכים את ספרים לזהב</p>
+    </div>
+  );
 };
 
 const StoreSelectHeader = () => {
@@ -123,8 +130,16 @@ const StoreSelectFooter = () => {
 
 const Root = ({ children }: { children?: ReactNode }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const email = (location.state as { email?: string })?.email ?? "";
-  const { seller_members, isLoading } = useSellers();
+  const { seller_members, isLoading, isError, error } = useSellers();
+
+  useEffect(() => {
+    if (isError && isFetchError(error) && error.status === 401) {
+      queryClient.clear();
+      navigate("/login?reason=Unauthorized", { replace: true });
+    }
+  }, [error, isError, navigate]);
 
   if (isLoading) {
     return (

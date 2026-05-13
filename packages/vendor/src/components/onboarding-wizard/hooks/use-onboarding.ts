@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "@medusajs/ui";
 
 import { useCreateSellerAccount, useLogout } from "@hooks/api";
+import { isFetchError } from "@lib/is-fetch-error";
 import { queryClient } from "@lib/query-client";
 import { TOTAL_STEPS } from "../constants";
 
@@ -202,6 +203,12 @@ export const useOnboarding = (memberEmail: string) => {
 
         navigate("/login?reason=seller-created", { replace: true });
       } catch (error: any) {
+        if (isFetchError(error) && error.status === 401) {
+          queryClient.clear();
+          navigate("/login?reason=Unauthorized", { replace: true });
+          return;
+        }
+
         toast.error(error.message);
       } finally {
         setIsSubmitting(false);

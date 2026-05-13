@@ -87,6 +87,8 @@ None at project start.
 | 260510-x1u | Fix seed.ts seller member password from Seller123! to Vendor123! | 2026-05-10 | fe849ea0 | [260510-x1u-fix-seed-ts-seller-member-password-from-](./quick/260510-x1u-fix-seed-ts-seller-member-password-from-/) |
 | 260511-vendors | Rename sidebar "Stores" → "Vendors", add /vendors redirect to /stores | 2026-05-11 | 0410d7b0 | [260511-vendors-label-redirect](./quick/260511-vendors-label-redirect/) |
 | 260511-3bg | Create apps/admin Vite app to serve the custom Mercur admin UI | 2026-05-11 | c8ee69ff | [260511-3bg-create-apps-admin-vite-app-to-serve-the-](./quick/260511-3bg-create-apps-admin-vite-app-to-serve-the-/) |
+| 260511-og2 | Rename Stores sidebar label to "מוכרים" in admin layout | 2026-05-11 | 26a57a89 | [260511-og2-rename-stores-sidebar-label-to-sellers-h](./quick/260511-og2-rename-stores-sidebar-label-to-sellers-h/) |
+| 260511-v1k | Disable standard Medusa admin (admin.disable=true) to fix Hebrew sellers list + /vendors 404 | 2026-05-11 | dfbdeb42 | [260511-v1k-disable-standard-medusa-admin](./quick/260511-v1k-disable-standard-medusa-admin/) |
 
 ### Technical Debt
 

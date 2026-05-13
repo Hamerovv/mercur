@@ -40,25 +40,25 @@ function getProfileSteps(seller: SellerDTO): ProfileStep[] {
   return [
     {
       key: "store_details",
-      label: "Add store details",
+      label: "הוסף פרטי חנות",
       completed: hasStoreDetails,
       path: "/settings/store/edit",
     },
     {
       key: "address",
-      label: "Add address",
+      label: "הוסף כתובת",
       completed: hasAddress,
       path: "/settings/store/address",
     },
     {
       key: "company_details",
-      label: "Add company details",
+      label: "הוסף פרטי חברה",
       completed: hasCompanyDetails,
       path: "/settings/store/professional-details",
     },
     {
       key: "payment_details",
-      label: "Add payment details",
+      label: "הוסף פרטי תשלום",
       completed: hasPaymentDetails,
       path: "/settings/store/payment-details",
     },
@@ -90,7 +90,7 @@ const StoreSetup = ({ seller }: { seller: SellerDTO }) => {
           <RadixCollapsible.Trigger asChild>
             <button className="flex w-full items-center justify-between">
               <Text size="large" weight="plus" leading="compact">
-                Complete store profile
+                השלם פרופיל חנות
               </Text>
               <TriangleDownMini
                 className={clx(

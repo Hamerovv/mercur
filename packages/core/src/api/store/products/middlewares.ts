@@ -4,35 +4,22 @@ import {
   MedusaResponse,
 } from "@medusajs/framework/http"
 import { MiddlewareRoute } from "@medusajs/medusa"
-import { SellerStatus } from "@mercurjs/types"
 
 /**
- * Restrict storefront product listings and detail lookups to products
- * belonging to sellers that are currently OPEN and not within an active
- * time-off window. Applied after Medusa's built-in validators so the
- * generated filterableFields are already populated.
+ * NOTE: Seller visibility filter has been disabled because `seller` is a
+ * remote-link entity in Medusa v2 and cannot be used as a direct
+ * filterableField on Product — doing so causes MikroORM to throw
+ * "Trying to query by not existing property Product.seller".
+ *
+ * The correct approach is to use remoteQuery to pre-fetch product IDs from
+ * open sellers and then filter by product_id[]. This is a TODO for a future
+ * iteration once we have products in the catalog.
  */
-function applySellerVisibilityFilter(
-  req: MedusaRequest,
+function passThrough(
+  _req: MedusaRequest,
   _res: MedusaResponse,
   next: MedusaNextFunction
 ) {
-  const now = new Date()
-
-  const filterableFields = (req.filterableFields ??= {} as Record<
-    string,
-    any
-  >)
-
-  const sellerFilter = (filterableFields.seller ??= {}) as Record<string, any>
-  sellerFilter.status = SellerStatus.OPEN
-
-  const sellerAnd = (sellerFilter.$and ??= []) as any[]
-  sellerAnd.push(
-    { $or: [{ closed_from: null }, { closed_from: { $gt: now } }] },
-    { $or: [{ closed_to: null }, { closed_to: { $lt: now } }] }
-  )
-
   next()
 }
 
@@ -40,11 +27,11 @@ export const storeProductsMiddlewares: MiddlewareRoute[] = [
   {
     method: ["GET"],
     matcher: "/store/products",
-    middlewares: [applySellerVisibilityFilter],
+    middlewares: [passThrough],
   },
   {
     method: ["GET"],
     matcher: "/store/products/:id",
-    middlewares: [applySellerVisibilityFilter],
+    middlewares: [passThrough],
   },
 ]

@@ -1,7 +1,8 @@
-import { Children, ReactNode } from "react";
+import { Children, ReactNode, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import i18n from "i18next";
-import { Alert, Button, Heading, Hint, Input, Text } from "@medusajs/ui";
+import { Eye, EyeSlash } from "@medusajs/icons";
+import { Alert, Button, Heading, Hint, IconButton, Input, Text } from "@medusajs/ui";
 import { useForm } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -50,6 +51,7 @@ const LoginForm = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [showPassword, setShowPassword] = useState(false);
 
   const reason = searchParams.get("reason") || "";
   const reasonMessage =
@@ -138,11 +140,29 @@ const LoginForm = () => {
               <Form.Item>
                 <Form.Label>{t("fields.password")}</Form.Label>
                 <Form.Control>
-                  <Input
-                    type="password"
-                    autoComplete="current-password"
-                    {...field}
-                  />
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      autoComplete="current-password"
+                      className="pe-10"
+                      {...field}
+                    />
+                    <div className="absolute inset-y-0 end-0 flex items-center pe-2">
+                      <IconButton
+                        type="button"
+                        size="small"
+                        variant="transparent"
+                        onClick={() => setShowPassword((p) => !p)}
+                        aria-label={showPassword ? "הסתר סיסמה" : "הצג סיסמה"}
+                      >
+                        {showPassword ? (
+                          <EyeSlash className="text-ui-fg-muted" />
+                        ) : (
+                          <Eye className="text-ui-fg-muted" />
+                        )}
+                      </IconButton>
+                    </div>
+                  </div>
                 </Form.Control>
               </Form.Item>
             )}

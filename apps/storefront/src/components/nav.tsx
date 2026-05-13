@@ -2,16 +2,31 @@
 
 import Link from "next/link"
 import { useCart } from "@/context/cart"
+import { useAuth } from "@/context/auth"
 
 export default function Nav() {
   const { itemCount } = useCart()
+  const { customer } = useAuth()
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center">
-          <img src="/bookshook-logo.png" alt="בוקשוק" className="h-12 w-auto" />
+          <div className="flex flex-col items-center">
+            <img src="/bookshook-logo.png" alt="בוקשוק" className="h-14 w-auto" />
+            <p className="text-xs text-gray-500 text-center mt-1">הופכים את ספרים לזהב</p>
+          </div>
         </Link>
+        <div className="flex items-center gap-2">
+          {customer ? (
+            <Link href="/account" className="text-sm text-gray-600 hover:text-amber-600 px-2 py-1">
+              החשבון שלי
+            </Link>
+          ) : (
+            <Link href="/login" className="text-sm text-gray-600 hover:text-amber-600 px-2 py-1">
+              התחברות
+            </Link>
+          )}
         <Link href="/cart" className="relative p-2">
           <svg
             className="w-6 h-6 text-gray-700"
@@ -32,6 +47,7 @@ export default function Nav() {
             </span>
           )}
         </Link>
+        </div>
       </div>
     </nav>
   )

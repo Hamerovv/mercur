@@ -33,7 +33,12 @@ const getSellerStatusBadge = (
 };
 
 const StoreSelectLogo = () => {
-  return <AvatarBox />;
+  return (
+    <div className="flex flex-col items-center">
+      <AvatarBox />
+      <p className="text-ui-fg-subtle text-sm mt-1">הופכים את ספרים לזהב</p>
+    </div>
+  );
 };
 
 const StoreSelectHeader = () => {

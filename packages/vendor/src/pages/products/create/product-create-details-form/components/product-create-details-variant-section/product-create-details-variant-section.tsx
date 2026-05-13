@@ -260,19 +260,19 @@ export const ProductCreateVariantsSection = () => {
   const createDefaultOptionAndVariant = () => {
     form.setValue("options", [
       {
-        title: "Default option",
-        values: ["Default option value"],
+        title: "ברירת מחדל",
+        values: ["ערך ברירת מחדל"],
       },
     ])
     form.setValue(
       "variants",
       decorateVariantsWithDefaultValues([
         {
-          title: "Default variant",
+          title: "וריאנט ברירת מחדל",
           should_create: true,
           variant_rank: 0,
           options: {
-            "Default option": "Default option value",
+            "ברירת מחדל": "ערך ברירת מחדל",
           },
           inventory: [{ inventory_item_id: "", required_quantity: "" }],
           is_default: true,

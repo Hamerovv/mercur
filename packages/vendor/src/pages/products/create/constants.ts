@@ -133,11 +133,11 @@ export const PRODUCT_CREATE_FORM_DEFAULTS: Partial<
   options: [],
   variants: decorateVariantsWithDefaultValues([
     {
-      title: "Default variant",
+      title: "וריאנט ברירת מחדל",
       should_create: true,
       variant_rank: 0,
       options: {
-        "Default option": "Default option value",
+        "ברירת מחדל": "ערך ברירת מחדל",
       },
       inventory: [{ inventory_item_id: "", required_quantity: "" }],
       is_default: true,

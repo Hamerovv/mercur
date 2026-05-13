@@ -433,7 +433,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
   logger.info("Seeding book genre categories...");
 
   const productCategoryModule = container.resolve(Modules.PRODUCT);
-  const categoryNames = ["Fiction", "Non-Fiction", "Science", "History", "Children's", "Business"];
+  const categoryNames = ["ספרות", "עיון", "מדע", "היסטוריה", "ילדים", "עסקים"];
   const existingCategories = await productCategoryModule.listProductCategories({
     name: categoryNames,
   });
@@ -467,8 +467,8 @@ export default async function seedDemoData({ container }: ExecArgs) {
   if (existingBooks.length === bookHandles.length) {
     logger.info("Sample books already exist, skipping.");
   } else {
-    const fictionCategory = categoryResult.find((c: { name: string }) => c.name === "Fiction");
-    const scienceCategory = categoryResult.find((c: { name: string }) => c.name === "Science");
+    const fictionCategory = categoryResult.find((c: { name: string }) => c.name === "ספרות");
+    const scienceCategory = categoryResult.find((c: { name: string }) => c.name === "מדע");
 
     await createProductsWorkflow(container).run({
       input: {

@@ -6,7 +6,7 @@ export const POST = async (
   req: AuthenticatedMedusaRequest,
   res: MedusaResponse
 ) => {
-  const { actor_id: customerId, auth_identity_id } = req.auth_context
+  const { actor_id: customerId, auth_identity_id } = req.auth_context ?? {}
 
   if (!customerId || !auth_identity_id) {
     throw new MedusaError(MedusaError.Types.UNAUTHORIZED, "Not authenticated as customer")
